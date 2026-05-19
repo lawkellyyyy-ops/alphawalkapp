@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="alphawalk">
+  <defs>
+    <!-- soft gold halo behind the star -->
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#d4a44a" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#d4a44a" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#d4a44a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- warm-black tile, rounded so it reads as an app icon at favicon size -->
+  <rect width="100" height="100" rx="22" ry="22" fill="#0a0710"/>
+
+  <!-- gold atmosphere -->
+  <circle cx="50" cy="50" r="42" fill="url(#halo)"/>
+
+  <!-- 4-point compass star · matches the PNG icon geometry exactly -->
+  <path d="M 50 10 L 55.3 44.7 L 90 50 L 55.3 55.3 L 50 90 L 44.7 55.3 L 10 50 L 44.7 44.7 Z"
+        fill="#f5f2ea"/>
+
+  <!-- gold core dot -->
+  <circle cx="50" cy="50" r="5.2" fill="#d4a44a"/>
+</svg>
