@@ -1,0 +1,3232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0a0710">
+<meta name="description" content="The AI crew that walks the market beside you. Each Hire watches one thing well — the decision is always yours.">
+<!-- PWA · save to home screen on iOS/Android · runs as standalone app -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="alphawalk">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<title>alphawalk — your AI crew for the market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   alphawalk · v7 · instrument cluster + proactive alerts + mobile app
+   ════════════════════════════════════════════════════════════ */
+:root{
+  --ink:#08060e;
+  --paper:#0a0710;
+  --lift:#10090d;
+  --card:#120e1a;
+
+  --t-1:#f5f2ea;
+  --t-2:rgba(245,242,234,.78);
+  --t-3:rgba(245,242,234,.52);
+  --t-4:rgba(245,242,234,.34);
+  --t-5:rgba(245,242,234,.18);
+  --t-6:rgba(245,242,234,.10);
+
+  --rule-1:rgba(245,242,234,.08);
+  --rule-2:rgba(245,242,234,.16);
+  --rule-3:rgba(245,242,234,.30);
+
+  --gold:#d4a44a;
+  --gold-bright:#e8b95a;
+  --gold-haze:rgba(212,164,74,.14);
+  --gold-glow:rgba(212,164,74,.35);
+
+  --rope:oklch(85% 0.16 215);
+  --rope-haze:rgba(95,232,255,.18);
+
+  --display:'Bebas Neue', 'Helvetica Neue Condensed', sans-serif;
+  --sans:'Inter Tight', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+
+  --gut:clamp(20px, 5vw, 56px);
+  --maxw:1180px;
+
+  --ease-out:cubic-bezier(.19,1,.22,1);
+  --safe-b:env(safe-area-inset-bottom, 0px);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  font-family:var(--sans);
+  background:var(--ink);
+  color:var(--t-1);
+  font-weight:400;
+  font-size:14.5px;
+  line-height:1.55;
+  letter-spacing:-.005em;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0;letter-spacing:inherit}
+::selection{background:var(--gold-haze);color:var(--t-1)}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rule-2);border-radius:999px}
+
+body::before{
+  content:''; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(1400px 900px at 50% 100%, rgba(212,164,74,.04), transparent 70%),
+    radial-gradient(1200px 800px at 50% 0%,   rgba(245,242,234,.02), transparent 70%);
+  pointer-events:none;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MASTHEAD · desktop
+   ════════════════════════════════════════════════════════════ */
+.masthead-bar{
+  position:sticky; top:0; z-index:50;
+  background:rgba(8,6,14,.88);
+  backdrop-filter:saturate(160%) blur(20px);
+  -webkit-backdrop-filter:saturate(160%) blur(20px);
+  border-bottom:1px solid var(--rule-1);
+  padding:18px var(--gut) 0;
+}
+.brand{
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+  padding-bottom:14px;
+}
+.brand .wordmark{
+  font-weight:500;
+  font-size:17px;
+  letter-spacing:-.025em;
+  color:var(--t-1);
+  display:inline-flex; align-items:center; gap:8px;
+}
+.brand .wordmark .star{width:14px;height:14px}
+.brand .signed,
+.brand .live{
+  position:absolute;
+  top:50%; transform:translateY(-50%);
+  font-size:10px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-3);
+  display:flex; align-items:center; gap:8px;
+}
+.brand .signed{left:0}
+.brand .live{right:0}
+.brand .live .dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--rope);
+  box-shadow:0 0 8px var(--rope), 0 0 0 4px var(--rope-haze);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.55; transform:scale(1)} 50%{opacity:1; transform:scale(1.25)}}
+
+.nav-row{
+  display:flex; align-items:center; justify-content:center;
+  padding:14px 0;
+  border-top:1px solid var(--rule-1);
+}
+.nav-link{
+  position:relative;
+  padding:0 22px;
+  font-size:11px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-4);
+  transition:color .25s var(--ease-out);
+}
+.nav-link + .nav-link{border-left:1px solid var(--rule-2)}
+.nav-link:hover{color:var(--t-1)}
+.nav-link.is-active{color:var(--t-1)}
+.nav-link.is-active::before{
+  content:'';
+  position:absolute;
+  left:50%; bottom:-15px;
+  transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold-glow);
+}
+
+/* ════════════════════════════════════════════════════════════
+   📱 BOTTOM TAB BAR · mobile only
+   ════════════════════════════════════════════════════════════ */
+.tabbar{
+  display:none;
+  position:fixed;
+  bottom:0; left:0; right:0;
+  z-index:60;
+  background:rgba(8,6,14,.92);
+  backdrop-filter:saturate(180%) blur(24px);
+  -webkit-backdrop-filter:saturate(180%) blur(24px);
+  border-top:1px solid var(--rule-1);
+  padding:10px 0 calc(10px + var(--safe-b));
+}
+.tabbar-inner{
+  display:flex; align-items:stretch; justify-content:space-around;
+  max-width:480px; margin:0 auto;
+}
+.tabbar-item{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:6px 4px 4px;
+  color:var(--t-4);
+  transition:color .2s var(--ease-out);
+  position:relative;
+}
+.tabbar-item svg{width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.tabbar-item .lbl{
+  font-size:10px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase;
+}
+.tabbar-item.is-active{color:var(--t-1)}
+.tabbar-item.is-active::after{
+  content:''; position:absolute;
+  top:-2px; left:50%; transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold-glow);
+}
+.tabbar-item .badge{
+  position:absolute;
+  top:2px; right:calc(50% - 18px);
+  min-width:16px; height:16px; padding:0 4px;
+  border-radius:999px;
+  background:var(--gold);
+  color:var(--ink);
+  font-size:9px; font-weight:700;
+  letter-spacing:0;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SHELL
+   ════════════════════════════════════════════════════════════ */
+.shell{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:56px var(--gut) 120px;
+}
+.tab-pane{display:none; animation:fadeIn .5s var(--ease-out)}
+.tab-pane.is-active{display:block}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}}
+
+/* ════════════════════════════════════════════════════════════
+   EYEBROW + TITLE + SUBTITLE
+   ════════════════════════════════════════════════════════════ */
+.eyebrow{
+  display:flex; align-items:center; justify-content:center;
+  gap:14px;
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-3);
+  margin:0 0 22px;
+  text-align:center;
+}
+.eyebrow .num{color:var(--gold); font-weight:600}
+.eyebrow .dot{width:3px; height:3px; border-radius:50%; background:var(--t-5)}
+
+.title{
+  margin:0 0 18px;
+  font-family:var(--display);
+  font-weight:400;
+  font-size:clamp(80px, 12vw, 140px);
+  line-height:.88;
+  letter-spacing:0;
+  text-align:center;
+  color:var(--t-1);
+}
+
+.subtitle{
+  display:flex; align-items:center; justify-content:center;
+  gap:18px;
+  font-size:11px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-3);
+  text-align:center;
+}
+.subtitle .gold{color:var(--gold)}
+.subtitle .dot{width:3px; height:3px; border-radius:50%; background:var(--t-5)}
+
+.hr{border:0; border-top:1px solid var(--rule-1); margin:64px 0 56px}
+
+/* ════════════════════════════════════════════════════════════
+   SECTION HEAD
+   ════════════════════════════════════════════════════════════ */
+.sec-head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:24px;
+  margin-bottom:36px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--rule-1);
+}
+.sec-head .idx{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.sec-head .idx .n{color:var(--gold); font-weight:600; margin-right:14px}
+.sec-head .meta{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-4);
+}
+
+/* ════════════════════════════════════════════════════════════
+   🎯 FEATURED INSTRUMENT
+   ════════════════════════════════════════════════════════════ */
+.instrument-stage{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:56px;
+  align-items:center;
+  padding:36px 0 24px;
+}
+.instrument{
+  position:relative;
+  width:340px;
+  height:340px;
+  flex:0 0 340px;
+}
+.instrument svg{width:100%; height:100%; display:block}
+.instrument .label{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  text-align:center;
+  pointer-events:none;
+}
+.instrument .label .delta{
+  display:block;
+  font-family:var(--display);
+  font-size:96px;
+  line-height:.85;
+  letter-spacing:-.01em;
+  color:var(--t-1);
+}
+.instrument .label .delta.gold{color:var(--gold)}
+.instrument .label .delta .sign{font-size:.55em; vertical-align:.18em; margin-right:2px}
+.instrument .label .action{
+  display:block;
+  margin-top:6px;
+  font-size:10px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.instrument .label .from-to{
+  display:block;
+  margin-top:14px;
+  font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--t-4);
+}
+.instrument .label .from-to b{color:var(--t-2); font-weight:500}
+
+.feature-meta{flex:1; min-width:0}
+.feature-name{
+  margin:0 0 6px;
+  font-family:var(--display);
+  font-weight:400;
+  font-size:clamp(60px, 8vw, 110px);
+  line-height:.85;
+  letter-spacing:0;
+  color:var(--t-1);
+}
+.feature-tagline{
+  display:flex; align-items:center;
+  gap:14px;
+  margin:0 0 24px;
+  font-size:11px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.feature-tagline .dot{width:3px; height:3px; border-radius:50%; background:var(--t-5)}
+
+/* mini stat rings */
+.rings{
+  display:flex; gap:24px;
+  margin:0 0 24px;
+}
+.ring{
+  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+  width:64px;
+}
+.ring-svg{width:48px; height:48px; display:block}
+.ring-val{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  color:var(--t-1);
+}
+.ring-lbl{
+  font-size:9px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--t-4);
+}
+
+/* ════════════════════════════════════════════════════════════
+   📡 CHANNEL CHIPS · where alerts route
+   ════════════════════════════════════════════════════════════ */
+.delivered{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 0;
+  border-top:1px solid var(--rule-1);
+  border-bottom:1px solid var(--rule-1);
+  margin:0 0 24px;
+  flex-wrap:wrap;
+}
+.delivered .lbl{
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-4);
+  display:flex; align-items:center; gap:8px;
+}
+.delivered .lbl .sent-dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+  animation:pulse 2.2s ease-in-out infinite;
+}
+.delivered .chs{display:flex; gap:6px; align-items:center}
+.ch-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  height:28px;
+  padding:0 10px;
+  border:1px solid var(--rule-2);
+  font-size:10px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t-2);
+}
+.ch-chip svg{width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.ch-chip.urgent{color:var(--gold); border-color:var(--gold-haze); background:var(--gold-haze)}
+
+/* tiny channel row used on dial cards / activity / store */
+.ch-row{
+  display:inline-flex; align-items:center; gap:6px;
+}
+.ch-mini{
+  width:18px; height:18px;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--t-3);
+}
+.ch-mini svg{width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.ch-mini.on{color:var(--t-1)}
+.ch-mini.urgent{color:var(--gold)}
+
+.act-btn{
+  display:inline-flex; align-items:center; gap:10px;
+  height:52px;
+  padding:0 22px;
+  border:1px solid var(--rule-2);
+  font-size:11px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-1);
+  transition:background .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out);
+}
+.act-btn svg{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
+.act-btn:hover{background:var(--t-1); color:var(--ink); border-color:var(--t-1)}
+.act-btn.primary{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+.act-btn.primary:hover{background:var(--gold-bright); border-color:var(--gold-bright)}
+.act-btn.icon-only{padding:0; width:52px; justify-content:center}
+
+.actions{display:flex; gap:8px; flex-wrap:wrap}
+
+/* ════════════════════════════════════════════════════════════
+   📊 DIAL CARDS
+   ════════════════════════════════════════════════════════════ */
+.dial-grid{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:14px;
+}
+.dial-card{
+  position:relative;
+  padding:24px 18px 14px;
+  border:1px solid var(--rule-1);
+  background:linear-gradient(180deg, rgba(255,255,255,.012), transparent);
+  display:flex; flex-direction:column; align-items:center;
+  cursor:pointer;
+  transition:border-color .25s var(--ease-out), background .25s var(--ease-out), transform .25s var(--ease-out);
+  text-align:center;
+}
+.dial-card:hover{
+  border-color:var(--rule-2);
+  background:linear-gradient(180deg, rgba(255,255,255,.025), transparent);
+  transform:translateY(-2px);
+}
+.dial-card.acting{
+  border-color:var(--gold-haze);
+  background:linear-gradient(180deg, var(--gold-haze), transparent 40%);
+}
+.dial-card.proposing{
+  border-color:var(--gold-haze);
+}
+.dial-card.proposing::before, .dial-card.acting::before{
+  content:''; position:absolute; top:0; left:14px; right:14px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold-haze) 30%, var(--gold-haze) 70%, transparent);
+}
+.dial-svg{width:120px; height:120px; display:block; margin-bottom:14px}
+.dial-name{
+  font-family:var(--display);
+  font-size:28px;
+  line-height:1;
+  margin:0 0 6px;
+  color:var(--t-1);
+}
+.dial-meta{
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-3);
+  margin-bottom:10px;
+}
+.dial-meta .state-dot{width:5px; height:5px; border-radius:50%; background:var(--t-3)}
+.dial-meta.proposing .state-dot,
+.dial-meta.acting .state-dot{background:var(--gold); box-shadow:0 0 6px var(--gold)}
+.dial-meta.proposing,
+.dial-meta.acting{color:var(--gold)}
+.dial-card .ch-row{
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid var(--rule-1);
+  width:100%;
+  justify-content:center;
+}
+
+/* ════════════════════════════════════════════════════════════
+   📨 REACHES YOU · phone + Slack previews + channels grid
+   ════════════════════════════════════════════════════════════ */
+.reach{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:36px;
+  align-items:start;
+}
+
+/* phone notification mockup */
+.phone-preview{
+  position:relative;
+  padding:24px 24px 28px;
+  border:1px solid var(--rule-1);
+  background:linear-gradient(180deg, rgba(20,15,25,.7), rgba(12,10,18,.5));
+  border-radius:32px;
+  overflow:hidden;
+}
+.phone-preview::before{
+  content:''; position:absolute;
+  top:14px; left:50%; transform:translateX(-50%);
+  width:90px; height:6px; border-radius:6px;
+  background:rgba(255,255,255,.06);
+}
+.phone-preview .ph-status{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:28px; margin-top:12px;
+  font-family:var(--sans);
+  font-size:11.5px; font-weight:600;
+  color:var(--t-2);
+  font-variant-numeric:tabular-nums;
+}
+.phone-preview .ph-status .ph-r{
+  display:flex; gap:6px; align-items:center;
+}
+.phone-preview .ph-status svg{width:14px; height:11px; stroke:var(--t-2); fill:none; stroke-width:1.2}
+.phone-preview .ph-date{
+  text-align:center;
+  font-family:var(--display);
+  font-size:80px;
+  line-height:.88;
+  color:var(--t-1);
+  margin-bottom:4px;
+}
+.phone-preview .ph-day{
+  text-align:center;
+  font-size:11px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-3);
+  margin-bottom:26px;
+}
+.phone-preview .ph-card{
+  background:rgba(40,30,50,.45);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:14px 14px 12px;
+}
+.phone-preview .ph-card-hd{
+  display:flex; align-items:center; gap:8px;
+  font-size:11px; color:var(--t-3);
+  margin-bottom:10px;
+}
+.phone-preview .ph-card-hd .app{
+  display:inline-flex; align-items:center; gap:6px;
+  font-weight:500;
+  color:var(--t-2);
+}
+.phone-preview .ph-card-hd .app .icn{
+  width:18px; height:18px; border-radius:5px;
+  background:radial-gradient(circle at 32% 28%, #ffffff, oklch(95% 0.04 215) 22%, var(--rope) 55%, oklch(40% 0.18 260) 100%);
+  display:inline-block;
+}
+.phone-preview .ph-card-hd .time{margin-left:auto}
+.phone-preview .ph-title{
+  font-size:14.5px; font-weight:600;
+  color:var(--t-1);
+  margin-bottom:4px;
+  letter-spacing:-.01em;
+}
+.phone-preview .ph-body{
+  font-size:13.5px;
+  color:var(--t-2);
+  line-height:1.4;
+  margin-bottom:12px;
+  letter-spacing:-.005em;
+}
+.phone-preview .ph-actions{
+  display:flex; gap:6px;
+}
+.phone-preview .ph-actions button{
+  flex:1;
+  height:30px;
+  border-radius:8px;
+  font-size:11px; font-weight:600;
+  letter-spacing:0;
+  text-transform:none;
+  color:var(--t-1);
+  background:rgba(255,255,255,.08);
+  border:0;
+}
+.phone-preview .ph-actions button.go{
+  background:var(--gold);
+  color:var(--ink);
+}
+
+/* Slack message preview */
+.slack-preview{
+  position:relative;
+  padding:18px 20px 18px;
+  border:1px solid var(--rule-1);
+  background:linear-gradient(180deg, rgba(20,15,25,.4), rgba(12,10,18,.35));
+  border-radius:16px;
+}
+.slack-preview .sl-channel{
+  display:flex; align-items:center; gap:10px;
+  font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-3);
+  padding-bottom:14px;
+  border-bottom:1px solid var(--rule-1);
+  margin-bottom:14px;
+}
+.slack-preview .sl-channel svg{width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round}
+.slack-preview .sl-channel .time{margin-left:auto; color:var(--t-4); letter-spacing:.16em}
+.slack-preview .sl-msg{
+  display:flex; gap:10px;
+}
+.slack-preview .sl-avatar{
+  width:36px; height:36px; border-radius:8px;
+  background:radial-gradient(circle at 30% 25%, var(--gold-haze), transparent 60%), rgba(255,255,255,.04);
+  border:1px solid var(--gold-haze);
+  display:grid; place-items:center;
+  color:var(--gold);
+  flex:0 0 36px;
+}
+.slack-preview .sl-avatar svg{width:20px; height:20px}
+.slack-preview .sl-body{flex:1; min-width:0}
+.slack-preview .sl-who{
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:4px;
+}
+.slack-preview .sl-who .name{
+  font-size:14px; font-weight:600;
+  color:var(--t-1);
+  letter-spacing:-.01em;
+}
+.slack-preview .sl-who .app-tag{
+  font-size:9px; font-weight:600;
+  letter-spacing:.16em;
+  background:rgba(255,255,255,.06);
+  padding:2px 6px; border-radius:3px;
+  color:var(--t-3);
+}
+.slack-preview .sl-who .ts{
+  margin-left:6px;
+  font-size:11px;
+  color:var(--t-4);
+  letter-spacing:0;
+}
+.slack-preview .sl-text{
+  font-size:13.5px;
+  line-height:1.5;
+  color:var(--t-2);
+  margin-bottom:10px;
+}
+.slack-preview .sl-text b{color:var(--t-1); font-weight:500}
+.slack-preview .sl-text code{
+  background:rgba(255,255,255,.06);
+  padding:1px 6px; border-radius:4px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:.9em;
+  color:var(--gold);
+}
+.slack-preview .sl-actions{
+  display:flex; gap:6px;
+  margin-top:10px;
+}
+.slack-preview .sl-actions button{
+  height:30px;
+  padding:0 12px;
+  border-radius:4px;
+  border:1px solid var(--rule-2);
+  background:transparent;
+  font-size:11px; font-weight:600;
+  color:var(--t-2);
+  letter-spacing:0; text-transform:none;
+}
+.slack-preview .sl-actions button.go{
+  background:var(--gold);
+  color:var(--ink);
+  border-color:var(--gold);
+}
+
+/* channels grid */
+.channels-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+  gap:10px;
+  margin-top:24px;
+}
+.channel-card{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px;
+  border:1px solid var(--rule-1);
+  background:linear-gradient(180deg, rgba(255,255,255,.012), transparent);
+}
+.channel-card .ic{
+  width:32px; height:32px;
+  display:grid; place-items:center;
+  color:var(--t-2);
+}
+.channel-card .ic svg{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
+.channel-card .body{flex:1; min-width:0}
+.channel-card .nm{
+  font-size:12px; font-weight:600;
+  color:var(--t-1);
+  letter-spacing:-.005em;
+}
+.channel-card .st{
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-4);
+  margin-top:2px;
+  display:flex; align-items:center; gap:6px;
+}
+.channel-card .st .stdot{width:4px; height:4px; border-radius:50%; background:var(--gold); box-shadow:0 0 4px var(--gold)}
+.channel-card.muted .st .stdot{background:var(--t-4); box-shadow:none}
+.channel-card .ct{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  color:var(--t-1);
+}
+.channel-card .ct.dim{color:var(--t-4); font-size:14px; letter-spacing:.16em; text-transform:uppercase; font-family:var(--sans); font-weight:500}
+
+/* ════════════════════════════════════════════════════════════
+   ACTIVITY · visual rail
+   ════════════════════════════════════════════════════════════ */
+.activity{
+  display:flex; flex-direction:column;
+  border-top:1px solid var(--rule-1);
+}
+.act-row{
+  display:grid;
+  grid-template-columns:60px 36px 1fr auto auto;
+  gap:18px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--rule-1);
+}
+.act-row .ts{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-4);
+  font-variant-numeric:tabular-nums;
+}
+.act-row .avatar{width:32px; height:32px}
+.act-row .what{
+  display:flex; align-items:center; gap:12px;
+  font-size:13.5px;
+  color:var(--t-2);
+  letter-spacing:-.005em;
+}
+.act-row .what .who{
+  font-family:var(--display);
+  font-size:18px;
+  line-height:1;
+  color:var(--t-1);
+}
+.act-row .what svg.icn{width:16px; height:16px; stroke:var(--t-3); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.act-row .delta{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  color:var(--t-1);
+}
+.act-row .delta.gold{color:var(--gold)}
+.act-row .ch-trail{
+  display:flex; gap:4px;
+  color:var(--t-4);
+}
+.act-row .ch-trail svg{width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+
+/* ════════════════════════════════════════════════════════════
+   STORE
+   ════════════════════════════════════════════════════════════ */
+.filters{
+  display:flex; justify-content:center; gap:0;
+  margin-bottom:48px;
+  padding:14px 0;
+  border-top:1px solid var(--rule-1);
+  border-bottom:1px solid var(--rule-1);
+  flex-wrap:wrap;
+}
+.filters .chip{
+  padding:6px 20px;
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-4);
+  border-left:1px solid var(--rule-2);
+  transition:color .2s var(--ease-out);
+}
+.filters .chip:first-child{border-left:0}
+.filters .chip:hover{color:var(--t-1)}
+.filters .chip.is-active{color:var(--gold)}
+
+.store-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:14px;
+}
+.store-card{
+  position:relative;
+  padding:28px 22px 18px;
+  border:1px solid var(--rule-1);
+  background:linear-gradient(180deg, rgba(255,255,255,.012), transparent);
+  display:flex; flex-direction:column; align-items:center;
+  text-align:center;
+  cursor:pointer;
+  transition:all .25s var(--ease-out);
+}
+.store-card:hover{
+  border-color:var(--rule-2);
+  background:linear-gradient(180deg, rgba(255,255,255,.025), transparent);
+  transform:translateY(-2px);
+}
+.store-card.hired{border-color:var(--gold-haze)}
+.store-card.hired::before{
+  content:''; position:absolute; top:0; left:14px; right:14px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold-haze) 30%, var(--gold-haze) 70%, transparent);
+}
+.store-card.new{
+  border-color:var(--gold);
+  background:linear-gradient(180deg, var(--gold-haze), transparent 50%);
+}
+.store-card .badge{
+  position:absolute;
+  top:14px; right:14px;
+  font-size:9px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--gold);
+}
+.store-card .new-badge{
+  position:absolute;
+  top:14px; left:14px;
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:9px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--gold);
+}
+.store-card .new-badge .nd{
+  width:5px; height:5px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.store-card .dial-svg{width:96px; height:96px; margin-bottom:12px; margin-top:18px}
+.store-card .name{
+  font-family:var(--display);
+  font-size:30px;
+  line-height:1;
+  margin:0 0 4px;
+  color:var(--t-1);
+}
+.store-card .role{
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-4);
+  margin-bottom:14px;
+}
+.store-card .ch-row{
+  margin:0 0 14px;
+}
+.store-card .hire-btn{
+  width:100%;
+  height:36px;
+  border:1px solid var(--rule-2);
+  font-size:10.5px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-1);
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .2s var(--ease-out);
+}
+.store-card .hire-btn:hover{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+.store-card .hire-btn svg{width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round}
+.store-card.hired .hire-btn{color:var(--t-3); border-style:dashed}
+.store-card.hired .hire-btn:hover{background:transparent; color:var(--t-1); border-color:var(--t-1)}
+
+/* ════════════════════════════════════════════════════════════
+   WALK · user log
+   ════════════════════════════════════════════════════════════ */
+.log-filters-desk{
+  display:flex; justify-content:center; gap:0;
+  margin-bottom:48px;
+  padding:14px 0;
+  border-top:1px solid var(--rule-1);
+  border-bottom:1px solid var(--rule-1);
+  flex-wrap:wrap;
+}
+.log-filters-desk .chip{
+  padding:6px 20px;
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-4);
+  border-left:1px solid var(--rule-2);
+  transition:color .2s var(--ease-out);
+}
+.log-filters-desk .chip:first-child{border-left:0}
+.log-filters-desk .chip:hover{color:var(--t-1)}
+.log-filters-desk .chip.is-active{color:var(--gold)}
+
+.walk-log{
+  max-width:820px;
+  margin:0 auto;
+}
+.walk-day{
+  display:flex; align-items:center; gap:18px;
+  font-family:var(--display);
+  font-size:24px;
+  letter-spacing:0;
+  color:var(--t-1);
+  padding:32px 0 14px;
+  margin-bottom:6px;
+}
+.walk-day.today{color:var(--gold)}
+.walk-day .ln{flex:1; height:1px; background:var(--rule-1)}
+.walk-day.today .ln{background:var(--gold-haze)}
+.walk-day .ct{
+  font-family:var(--sans);
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-4);
+}
+
+.walk-row{
+  display:grid;
+  grid-template-columns:80px 44px 1fr auto;
+  gap:18px;
+  padding:14px 0;
+  border-bottom:1px solid var(--rule-1);
+  align-items:center;
+}
+.walk-row .time{
+  font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-4);
+  font-variant-numeric:tabular-nums;
+}
+.walk-row .actor{
+  width:36px; height:36px;
+  border-radius:10px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--rule-1);
+  display:grid; place-items:center;
+  color:var(--t-2);
+}
+.walk-row .actor svg{width:20px; height:20px}
+.walk-row.user .actor{
+  background:var(--gold-haze);
+  border-color:var(--gold-haze);
+  color:var(--gold);
+  font-size:9px; font-weight:700;
+  letter-spacing:.04em;
+}
+.walk-row.acting .actor{
+  background:var(--gold-haze);
+  border-color:var(--gold);
+  color:var(--gold);
+}
+.walk-row.system .actor{
+  background:transparent;
+  border-style:dashed;
+  color:var(--t-5);
+}
+.walk-row .body{min-width:0; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.walk-row .who{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  letter-spacing:0;
+  color:var(--t-1);
+}
+.walk-row.user .who{color:var(--gold)}
+.walk-row .act{
+  font-size:14px;
+  color:var(--t-2);
+  letter-spacing:-.005em;
+}
+.walk-row.system .act{color:var(--t-3)}
+.walk-row .meta{
+  font-size:13px;
+  color:var(--t-3);
+  letter-spacing:-.005em;
+}
+.walk-row .meta .n{color:var(--gold); font-weight:500; font-family:var(--display); font-size:18px; vertical-align:-.05em}
+.walk-row .ch{
+  display:inline-flex; align-items:center; gap:5px;
+  margin-left:auto;
+}
+.walk-row .ch svg{width:13px; height:13px; stroke:var(--t-4); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.walk-row .ch svg.urg{stroke:var(--gold)}
+
+.entry{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:40px;
+  align-items:center;
+  max-width:880px;
+  margin:0 auto;
+  padding:48px 0;
+  border-top:1px solid var(--rule-1);
+}
+.entry:last-of-type{border-bottom:1px solid var(--rule-1)}
+.entry-l{
+  display:flex; flex-direction:column; align-items:center;
+  flex:0 0 220px;
+  width:220px;
+}
+.entry-l .ts{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-4);
+  margin-bottom:8px;
+}
+.entry-l .dial-svg{width:140px; height:140px; margin-bottom:14px}
+.entry-l .who{
+  font-family:var(--display);
+  font-size:42px;
+  line-height:1;
+  color:var(--t-1);
+  margin:0 0 4px;
+}
+.entry-l .role{
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-4);
+  margin-bottom:8px;
+}
+.entry-l .ch-row{justify-content:center; opacity:.85}
+.entry-r{}
+.entry-headline{
+  font-family:var(--display);
+  font-weight:400;
+  font-size:clamp(28px, 3.4vw, 44px);
+  line-height:1;
+  letter-spacing:0;
+  color:var(--t-1);
+  margin:0 0 14px;
+}
+.entry-headline .n{color:var(--gold)}
+.entry-body{
+  font-weight:300;
+  font-size:15px;
+  line-height:1.68;
+  color:var(--t-2);
+  letter-spacing:-.005em;
+  max-width:54ch;
+}
+.entry-body b{color:var(--t-1); font-weight:500}
+.entry-body .n{color:var(--gold); font-weight:500}
+
+.walk-close{
+  text-align:center;
+  margin-top:72px;
+  padding-top:40px;
+  border-top:1px solid var(--rule-1);
+}
+.walk-close .text{
+  font-family:var(--display);
+  font-size:clamp(40px, 6vw, 80px);
+  line-height:.95;
+  margin:0 0 24px;
+  color:var(--t-1);
+}
+.walk-close .text .gold{color:var(--gold)}
+
+/* ════════════════════════════════════════════════════════════
+   📱 MOBILE · app shell
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 880px){
+  .brand .signed, .brand .live{display:none}
+  .instrument-stage{grid-template-columns:1fr; gap:32px; text-align:center}
+  .feature-meta{display:flex; flex-direction:column; align-items:center}
+  .feature-name{font-size:64px}
+  .rings{justify-content:center}
+  .actions{justify-content:center; width:100%}
+  .delivered{justify-content:center}
+  .instrument{width:280px; height:280px; flex:0 0 280px; margin:0 auto}
+  .dial-grid{grid-template-columns:repeat(2, 1fr)}
+  .store-grid{grid-template-columns:repeat(2, 1fr)}
+  .reach{grid-template-columns:1fr; gap:24px}
+  .act-row{grid-template-columns:48px 28px 1fr auto; gap:12px}
+  .act-row .ch-trail{display:none}
+  .entry{grid-template-columns:1fr; text-align:center; gap:24px}
+  .entry-l{flex:auto; width:auto; align-items:center}
+  .entry-body{margin:0 auto}
+}
+
+@media (max-width: 640px){
+  /* hide desktop nav, show bottom tab bar */
+  .nav-row{display:none}
+  .tabbar{display:block}
+
+  /* tighter masthead */
+  .masthead-bar{padding:14px var(--gut) 12px}
+  .brand{padding-bottom:0}
+  .brand .wordmark{font-size:15px}
+
+  /* shell padding accounts for tab bar */
+  .shell{padding:32px 20px calc(100px + var(--safe-b))}
+
+  /* big title smaller on phones */
+  .title{font-size:56px; margin-bottom:14px}
+  .subtitle{font-size:10px; gap:12px}
+  .eyebrow{font-size:10px}
+  .hr{margin:40px 0 36px}
+  .sec-head{margin-bottom:22px}
+
+  /* featured instrument compact */
+  .instrument{width:240px; height:240px; flex:0 0 240px}
+  .instrument .label .delta{font-size:64px}
+  .feature-name{font-size:54px}
+  .feature-tagline{font-size:10px; gap:10px}
+
+  /* app-style cards full width */
+  .dial-grid{grid-template-columns:1fr; gap:10px}
+  .dial-card{
+    flex-direction:row;
+    align-items:center;
+    text-align:left;
+    padding:14px 16px;
+    gap:14px;
+  }
+  .dial-card .dial-svg{width:64px; height:64px; margin-bottom:0; flex:0 0 64px}
+  .dial-card .dial-name{font-size:22px; margin-bottom:2px}
+  .dial-card .dial-meta{margin-bottom:6px}
+  .dial-card .ch-row{
+    margin-top:0;
+    padding-top:0;
+    border-top:0;
+    width:auto;
+    justify-content:flex-start;
+  }
+  .dial-card > div, .dial-card > p{align-self:stretch}
+  /* layout the inner pieces into a column to the right of the dial */
+  .dial-card{display:grid; grid-template-columns:64px 1fr auto; align-items:center}
+  .dial-card .dial-svg{grid-row:span 2}
+  .dial-card .dial-name{grid-column:2; align-self:end}
+  .dial-card .dial-meta{grid-column:2; align-self:start; margin-bottom:0}
+  .dial-card .ch-row{grid-column:3; grid-row:1 / span 2; align-self:center}
+
+  /* phone preview becomes the hero on mobile · scales down to fit */
+  .phone-preview{padding:18px 18px 22px}
+  .phone-preview .ph-date{font-size:64px}
+  .slack-preview{padding:14px 16px}
+
+  /* store grid: 1 col, app-style horizontal cards */
+  .store-grid{grid-template-columns:1fr; gap:10px}
+  .store-card{
+    flex-direction:row;
+    text-align:left;
+    padding:16px;
+    align-items:center;
+    gap:16px;
+    display:grid;
+    grid-template-columns:64px 1fr auto;
+  }
+  .store-card .dial-svg{width:64px; height:64px; margin:0; flex:0 0 64px; grid-row:span 3}
+  .store-card .name{font-size:22px; grid-column:2; align-self:end; margin-bottom:0}
+  .store-card .role{grid-column:2; align-self:center; margin-bottom:0}
+  .store-card .ch-row{grid-column:2; align-self:start; opacity:.8}
+  .store-card .hire-btn{grid-column:3; grid-row:1/span 3; width:auto; height:36px; padding:0 14px; align-self:center}
+  .store-card .badge, .store-card .new-badge{display:none}
+  .store-card.hired{position:relative}
+  .store-card.hired::after{
+    content:'✓';
+    position:absolute; top:8px; right:8px;
+    color:var(--gold); font-size:14px; line-height:1;
+  }
+
+  /* walk · single column app-friendly */
+  .entry-l .dial-svg{width:108px; height:108px}
+  .entry-l .who{font-size:36px}
+  .entry-headline{font-size:24px}
+
+  /* user log compact on mobile */
+  .walk-row{grid-template-columns:54px 32px 1fr; gap:10px; padding:12px 0}
+  .walk-row .actor{width:28px; height:28px}
+  .walk-row .actor svg{width:16px; height:16px}
+  .walk-row .body{gap:8px}
+  .walk-row .who{font-size:18px}
+  .walk-row .act{font-size:13px; width:100%; flex:0 0 100%; margin-top:-4px}
+  .walk-row .meta{font-size:12px}
+  .walk-row .meta .n{font-size:16px}
+  .walk-row .ch{margin-left:0; margin-top:2px; flex:0 0 100%}
+
+  /* activity full-width */
+  .act-row{padding:12px 0}
+  .act-row .what{font-size:13px}
+
+  /* channel chips smaller */
+  .ch-chip{font-size:9px; height:24px; padding:0 8px}
+  .ch-chip svg{width:11px; height:11px}
+
+  .filters{padding:10px 0; gap:0}
+  .filters .chip{padding:6px 12px}
+
+  /* hide signed area */
+  .brand .signed, .brand .live{display:none}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   📱 EMBEDDED MOBILE WEB APP · activates below 820px
+   ════════════════════════════════════════════════════════════ */
+.m-app{display:none}
+@media (max-width: 819px){
+  /* hide desktop shell entirely · mobile app takes over */
+  .masthead-bar, .shell, .tabbar{display:none !important}
+  body{background:var(--ink); overflow-x:hidden}
+  body::before{display:none}
+
+  .m-app{
+    display:flex; flex-direction:column;
+    min-height:100vh; min-height:100dvh;
+    background:var(--ink);
+    color:var(--t-1);
+    font-family:'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size:15px;
+    -webkit-tap-highlight-color:transparent;
+  }
+}
+
+/* status bar */
+.m-app .m-status{
+  flex:0 0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  height:54px;
+  padding:max(14px, calc(env(safe-area-inset-top, 0px) + 4px)) 28px 0;
+  font-size:15px; font-weight:600;
+  color:var(--t-1);
+}
+.m-app .m-status .time{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+}
+.m-app .m-status .indicators{
+  display:flex; align-items:center; gap:5px;
+}
+.m-app .m-status .indicators svg{stroke:var(--t-1); fill:none; stroke-linecap:round}
+
+/* app scroll area */
+.m-app .m-main{
+  flex:1 1 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  position:relative;
+}
+.m-app .m-main::-webkit-scrollbar{display:none}
+.m-app .m-pane{display:none}
+.m-app .m-pane.is-active{display:block}
+
+/* titlebar */
+.m-app .m-titlebar{
+  padding:6px 20px 12px;
+}
+.m-app .m-titlebar .m-date{
+  font-size:11px; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:4px;
+}
+.m-app .m-titlebar .m-name{
+  font-family:var(--display);
+  font-size:60px;
+  line-height:.88;
+  letter-spacing:0;
+  color:var(--t-1);
+  margin:0;
+}
+.m-app .m-titlebar .m-sub{
+  display:flex; align-items:center; gap:10px;
+  margin-top:8px;
+  font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.m-app .m-titlebar .m-sub .gold{color:var(--gold)}
+.m-app .m-titlebar .m-sub .dot{width:3px; height:3px; border-radius:50%; background:var(--t-5)}
+
+/* section header */
+.m-app .m-sec{
+  padding:18px 20px 8px;
+  display:flex; align-items:baseline; justify-content:space-between;
+}
+.m-app .m-sec .l{
+  font-size:10.5px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.m-app .m-sec .r{
+  font-size:10px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-4);
+}
+
+/* featured alert card */
+.m-app .m-alert{
+  position:relative;
+  margin:0 20px;
+  border-radius:24px;
+  background:
+    radial-gradient(280px 160px at 100% 0%, var(--gold-haze), transparent 65%),
+    linear-gradient(180deg, #1a1426, #13101c);
+  padding:18px;
+  border:1px solid var(--gold-haze);
+  overflow:hidden;
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px rgba(0,0,0,.4), 0 0 32px var(--gold-haze);
+}
+.m-app .m-alert::before{
+  content:''; position:absolute; top:0; left:18px; right:18px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold-haze) 30%, var(--gold-haze) 70%, transparent);
+}
+.m-app .m-alert-tag{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:9.5px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:14px;
+}
+.m-app .m-alert-tag .d{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold), 0 0 0 4px var(--gold-haze);
+  animation:pulse 2.2s ease-in-out infinite;
+}
+.m-app .m-alert-row{
+  display:grid;
+  grid-template-columns:88px 1fr;
+  gap:14px;
+  align-items:center;
+  margin-bottom:14px;
+}
+.m-app .m-gauge{
+  position:relative;
+  width:88px; height:88px;
+}
+.m-app .m-gauge svg{width:100%; height:100%}
+.m-app .m-gauge .glabel{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  text-align:center;
+}
+.m-app .m-gauge .v{
+  font-family:var(--display);
+  font-size:30px;
+  line-height:.88;
+  color:var(--gold);
+}
+.m-app .m-gauge .v .sign{font-size:.55em; vertical-align:.2em; margin-right:1px}
+.m-app .m-alert .who{
+  font-family:var(--display);
+  font-size:38px;
+  line-height:.9;
+  color:var(--t-1);
+  margin:0 0 4px;
+}
+.m-app .m-alert .role{
+  font-size:10px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.m-app .m-alert-body{
+  font-size:14.5px;
+  color:var(--t-1);
+  line-height:1.4;
+  margin:0 0 14px;
+}
+.m-app .m-alert-body b{color:var(--t-1); font-weight:600}
+.m-app .m-alert-body .n{color:var(--gold); font-weight:500}
+.m-app .m-rings{
+  display:flex; gap:14px;
+  margin:0 0 14px;
+  padding:12px 0;
+  border-top:1px solid var(--rule-1);
+  border-bottom:1px solid var(--rule-1);
+}
+.m-app .m-rings .r{flex:1; display:flex; flex-direction:column; gap:4px}
+.m-app .m-rings .r .num{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  color:var(--t-1);
+}
+.m-app .m-rings .r .num.gold{color:var(--gold)}
+.m-app .m-rings .r .l{
+  font-size:9px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--t-4);
+}
+.m-app .m-chs{
+  display:flex; align-items:center; gap:8px;
+  margin:0 0 16px;
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--t-4);
+}
+.m-app .m-chs .sent{
+  color:var(--gold);
+  display:flex; align-items:center; gap:6px;
+}
+.m-app .m-chs .sent .sd{
+  width:5px; height:5px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+}
+.m-app .m-chs .icons{display:flex; gap:5px; margin-left:auto}
+.m-app .m-chs .icons svg{width:14px; height:14px; stroke:var(--t-2); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.m-app .m-chs .icons svg.urg{stroke:var(--gold)}
+.m-app .m-acts{display:flex; gap:6px}
+.m-app .m-btn{
+  flex:1;
+  height:44px;
+  border-radius:14px;
+  font-size:13px; font-weight:600;
+  letter-spacing:-.005em;
+  color:var(--t-1);
+  background:rgba(255,255,255,.08);
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  transition:transform .15s;
+  border:0;
+}
+.m-app .m-btn:active{transform:scale(.97)}
+.m-app .m-btn svg{width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.m-app .m-btn.primary{background:var(--gold); color:var(--ink)}
+.m-app .m-btn.icon-only{flex:0 0 44px; padding:0}
+
+/* iOS-style list */
+.m-app .m-list{
+  margin:0 20px;
+  border-radius:18px;
+  background:#13101c;
+  border:1px solid var(--rule-1);
+  overflow:hidden;
+}
+.m-app .m-row{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:14px; align-items:center;
+  padding:14px 16px;
+  border-bottom:1px solid var(--rule-1);
+}
+.m-app .m-row:last-child{border-bottom:0}
+.m-app .m-row:active{background:rgba(255,255,255,.04)}
+.m-app .m-row.acting{background:linear-gradient(90deg, var(--gold-haze), transparent 60%)}
+.m-app .m-row.proposing{background:linear-gradient(90deg, var(--gold-haze), transparent 60%)}
+.m-app .m-rowicn{
+  width:46px; height:46px;
+  border-radius:14px;
+  background:linear-gradient(180deg, #1a1426, #13101c);
+  border:1px solid var(--rule-1);
+  display:grid; place-items:center;
+  position:relative;
+}
+.m-app .m-rowicn svg{width:24px; height:24px}
+.m-app .m-rowicn.gold{border-color:var(--gold-haze); background:var(--gold-haze)}
+.m-app .m-rowicn .badge{
+  position:absolute;
+  top:-2px; right:-2px;
+  width:8px; height:8px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 2px #13101c, 0 0 6px var(--gold);
+}
+.m-app .m-rowname{
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  color:var(--t-1);
+  margin:0 0 4px;
+}
+.m-app .m-rowmeta{
+  display:flex; align-items:center; gap:8px;
+  font-size:11px;
+  color:var(--t-3);
+}
+.m-app .m-rowmeta .pill{
+  display:inline-flex; align-items:center; gap:4px;
+  height:18px; padding:0 7px;
+  border-radius:99px;
+  font-size:9px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase;
+  background:rgba(255,255,255,.05);
+  color:var(--t-3);
+}
+.m-app .m-rowmeta .pill.gold{background:var(--gold-haze); color:var(--gold)}
+.m-app .m-rowmeta .pill .pd{width:4px; height:4px; border-radius:50%; background:currentColor; box-shadow:0 0 4px currentColor}
+.m-app .m-rowaside{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
+.m-app .m-rowaside .t{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t-4);
+  font-variant-numeric:tabular-nums;
+}
+.m-app .m-rowaside .chev{position:relative; width:14px; height:14px}
+.m-app .m-rowaside .chev::after{
+  content:''; position:absolute;
+  right:0; top:50%;
+  width:7px; height:7px;
+  border-right:1.5px solid var(--t-4);
+  border-top:1.5px solid var(--t-4);
+  transform:translateY(-50%) rotate(45deg);
+}
+
+/* channel pills strip */
+.m-app .m-chstrip{
+  padding:6px 20px 12px;
+  overflow-x:auto;
+  display:flex; gap:8px;
+  scroll-snap-type:x mandatory;
+}
+.m-app .m-chstrip::-webkit-scrollbar{display:none}
+.m-app .m-chpill{
+  flex:0 0 auto;
+  display:inline-flex; align-items:center; gap:8px;
+  height:38px; padding:0 14px;
+  border-radius:14px;
+  background:#13101c;
+  border:1px solid var(--rule-1);
+}
+.m-app .m-chpill svg{width:16px; height:16px; stroke:var(--t-2); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.m-app .m-chpill .nm{
+  font-size:11.5px; font-weight:600;
+  color:var(--t-1);
+}
+.m-app .m-chpill .st{
+  display:flex; align-items:center; gap:4px;
+  font-size:9.5px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t-4);
+  margin-left:4px;
+}
+.m-app .m-chpill .st .sd{width:4px; height:4px; border-radius:50%; background:var(--gold); box-shadow:0 0 4px var(--gold)}
+.m-app .m-chpill.muted .st .sd{background:var(--t-5); box-shadow:none}
+.m-app .m-chpill.gold{border-color:var(--gold-haze); background:var(--gold-haze)}
+.m-app .m-chpill.gold svg{stroke:var(--gold)}
+.m-app .m-chpill.gold .nm{color:var(--gold)}
+
+/* notification stack feed */
+.m-app .m-feed{
+  display:flex; flex-direction:column; gap:8px;
+  margin:0 20px;
+}
+.m-app .m-feedcard{
+  background:rgba(40,30,50,.45);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:12px 14px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:10px; align-items:center;
+}
+.m-app .m-feedcard .ic{
+  width:32px; height:32px;
+  border-radius:8px;
+  background:rgba(255,255,255,.04);
+  display:grid; place-items:center;
+  color:var(--t-2);
+}
+.m-app .m-feedcard .ic svg{width:18px; height:18px}
+.m-app .m-feedcard.gold .ic{color:var(--gold); background:var(--gold-haze)}
+.m-app .m-feedcard .who{
+  font-family:var(--display);
+  font-size:16px;
+  line-height:1;
+  color:var(--t-1);
+  margin-bottom:2px;
+}
+.m-app .m-feedcard .txt{
+  font-size:12px;
+  color:var(--t-2);
+  display:flex; align-items:center; gap:6px;
+}
+.m-app .m-feedcard .txt svg{width:13px; height:13px; stroke:var(--t-3); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; flex:0 0 13px}
+.m-app .m-feedcard .right{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
+.m-app .m-feedcard .right .delta{
+  font-family:var(--display);
+  font-size:18px; line-height:1;
+  color:var(--t-1);
+}
+.m-app .m-feedcard .right .delta.gold{color:var(--gold)}
+.m-app .m-feedcard .right .ts{
+  font-size:9px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t-4);
+}
+
+/* store tiles (mobile) */
+.m-app .m-storelist{display:flex; flex-direction:column; gap:10px; padding:0 20px}
+.m-app .m-storetile{
+  position:relative;
+  border-radius:18px;
+  background:#13101c;
+  border:1px solid var(--rule-1);
+  padding:16px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:14px; align-items:center;
+}
+.m-app .m-storetile.hired{border-color:var(--gold-haze)}
+.m-app .m-storetile.new{
+  border-color:var(--gold);
+  background:linear-gradient(180deg, var(--gold-haze), #13101c 60%);
+}
+.m-app .m-storetile .icn{
+  width:52px; height:52px;
+  border-radius:14px;
+  background:linear-gradient(180deg, #1a1426, #13101c);
+  border:1px solid var(--rule-1);
+  display:grid; place-items:center;
+}
+.m-app .m-storetile .icn svg{width:26px; height:26px}
+.m-app .m-storetile.new .icn{background:var(--gold-haze); border-color:var(--gold)}
+.m-app .m-storetile.new .icn svg{color:var(--gold)}
+.m-app .m-storetile .nm{
+  font-family:var(--display);
+  font-size:24px;
+  line-height:1;
+  color:var(--t-1);
+  margin-bottom:4px;
+}
+.m-app .m-storetile .role{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t-3);
+  margin-bottom:8px;
+}
+.m-app .m-storetile .chs{display:flex; gap:5px; align-items:center}
+.m-app .m-storetile .chs svg{width:14px; height:14px; stroke:var(--t-3); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.m-app .m-storetile .chs svg.on{stroke:var(--t-1)}
+.m-app .m-storetile .hbtn{
+  height:38px;
+  padding:0 16px;
+  border-radius:99px;
+  background:var(--t-1);
+  color:var(--ink);
+  font-size:11.5px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:6px;
+  border:0;
+}
+.m-app .m-storetile.hired .hbtn{
+  background:transparent;
+  color:var(--t-3);
+  border:1px dashed var(--rule-2);
+}
+.m-app .m-storetile.new .hbtn{background:var(--gold); color:var(--ink)}
+.m-app .m-storetile .new-tag{
+  position:absolute;
+  top:8px; right:14px;
+  font-size:9px; font-weight:600;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--gold);
+}
+
+.m-app .m-stfilters{
+  display:flex; gap:6px;
+  padding:0 20px 12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+}
+.m-app .m-stfilters::-webkit-scrollbar{display:none}
+.m-app .m-stfilters .chip{
+  flex:0 0 auto;
+  height:32px; padding:0 14px;
+  border-radius:99px;
+  border:1px solid var(--rule-1);
+  background:#13101c;
+  font-size:11px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--t-3);
+}
+.m-app .m-stfilters .chip.is-active{background:var(--t-1); color:var(--ink); border-color:var(--t-1)}
+
+/* user log (mobile) */
+.m-app .m-log{padding:0 20px}
+.m-app .m-logday{
+  display:flex; align-items:center; gap:14px;
+  font-size:10.5px; font-weight:600;
+  letter-spacing:.32em; text-transform:uppercase;
+  color:var(--t-4);
+  padding:24px 0 12px;
+  position:sticky;
+  top:0;
+  background:linear-gradient(180deg, var(--ink) 70%, transparent);
+  z-index:5;
+}
+.m-app .m-logday .ln{flex:1; height:1px; background:var(--rule-1)}
+.m-app .m-logday.today{color:var(--gold)}
+.m-app .m-logday.today .ln{background:var(--gold-haze)}
+.m-app .m-logrow{
+  display:grid;
+  grid-template-columns:42px 30px 1fr;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid var(--rule-1);
+  align-items:flex-start;
+}
+.m-app .m-logrow .t{
+  font-size:10.5px; font-weight:500;
+  color:var(--t-4);
+  font-variant-numeric:tabular-nums;
+  padding-top:2px;
+}
+.m-app .m-logrow .ic{
+  width:26px; height:26px;
+  border-radius:8px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--rule-1);
+  display:grid; place-items:center;
+  color:var(--t-2);
+}
+.m-app .m-logrow .ic svg{width:16px; height:16px}
+.m-app .m-logrow.user .ic{background:var(--gold-haze); border-color:var(--gold-haze); color:var(--gold); font-size:8.5px; font-weight:700}
+.m-app .m-logrow.acting .ic{background:var(--gold-haze); border-color:var(--gold); color:var(--gold)}
+.m-app .m-logrow.system .ic{background:transparent; border-style:dashed; color:var(--t-5)}
+.m-app .m-logrow .b{min-width:0}
+.m-app .m-logrow .l1{font-size:13px; color:var(--t-1); line-height:1.35}
+.m-app .m-logrow .l1 .who{font-family:var(--display); font-size:15px; margin-right:6px}
+.m-app .m-logrow .l1 .act{color:var(--t-2)}
+.m-app .m-logrow.user .l1 .who{color:var(--gold)}
+.m-app .m-logrow.system .l1{color:var(--t-3)}
+.m-app .m-logrow .l2{
+  display:flex; align-items:center; gap:6px;
+  margin-top:3px;
+  font-size:11px;
+  color:var(--t-3);
+  flex-wrap:wrap;
+}
+.m-app .m-logrow .l2 .n{color:var(--gold); font-weight:500}
+.m-app .m-logrow .l2 .chs{display:inline-flex; gap:4px; margin-left:auto}
+.m-app .m-logrow .l2 .chs svg{width:11px; height:11px; stroke:var(--t-4); fill:none; stroke-width:1.5}
+
+/* bottom tab bar (mobile, fixed) */
+.m-app .m-tabbar{
+  flex:0 0 auto;
+  background:rgba(8,6,14,.92);
+  backdrop-filter:saturate(180%) blur(24px);
+  -webkit-backdrop-filter:saturate(180%) blur(24px);
+  border-top:1px solid var(--rule-1);
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+  display:flex; justify-content:space-around;
+}
+.m-app .m-tab{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:6px 4px;
+  color:var(--t-4);
+  position:relative;
+  background:none; border:0;
+}
+.m-app .m-tab svg{width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.m-app .m-tab .lbl{
+  font-size:10.5px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+}
+.m-app .m-tab.is-active{color:var(--t-1)}
+.m-app .m-tab.is-active::after{
+  content:''; position:absolute;
+  top:-1px; left:50%; transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold-glow);
+}
+.m-app .m-tab .badge{
+  position:absolute;
+  top:4px; right:calc(50% - 22px);
+  min-width:16px; height:16px; padding:0 4px;
+  border-radius:99px;
+  background:var(--gold);
+  color:var(--ink);
+  font-size:9px; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     SVG LIBRARY · Hire marks, action icons, tier dots, channel icons
+     ════════════════════════════════════════════════════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- ━━━ HIRE MARKS ━━━ -->
+    <symbol id="m-vega" viewBox="0 0 40 40">
+      <path d="M6 26 L13 18 L19 28 L25 14 L31 22 L34 18" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="m-atlas" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="11" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      <path d="M9 20 H31 M20 9 V31" stroke="currentColor" stroke-width="1" fill="none"/>
+      <path d="M11.5 14.5 C14.5 17, 25.5 17, 28.5 14.5 M11.5 25.5 C14.5 23, 25.5 23, 28.5 25.5" stroke="currentColor" stroke-width=".9" fill="none"/>
+    </symbol>
+    <symbol id="m-orion" viewBox="0 0 40 40">
+      <circle cx="12" cy="28" r="1.6" fill="currentColor"/>
+      <circle cx="20" cy="20" r="2.1" fill="currentColor"/>
+      <circle cx="28" cy="12" r="1.6" fill="currentColor"/>
+      <path d="M12 28 L20 20 L28 12" stroke="currentColor" stroke-width=".8" fill="none" stroke-dasharray="2 2"/>
+    </symbol>
+    <symbol id="m-ridge" viewBox="0 0 40 40">
+      <path d="M6 28 L14 14 L20 22 L26 10 L34 28" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="m-echo" viewBox="0 0 40 40">
+      <circle cx="20" cy="22" r="1.8" fill="currentColor"/>
+      <path d="M14 22 A6 6 0 0 1 26 22" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      <path d="M10 22 A10 10 0 0 1 30 22" stroke="currentColor" stroke-width="1" fill="none" opacity=".6"/>
+      <path d="M6 22 A14 14 0 0 1 34 22" stroke="currentColor" stroke-width=".9" fill="none" opacity=".35"/>
+    </symbol>
+    <symbol id="m-forge" viewBox="0 0 40 40">
+      <rect x="8" y="22" width="4" height="10" fill="currentColor" rx="1"/>
+      <rect x="15" y="18" width="4" height="14" fill="currentColor" rx="1"/>
+      <rect x="22" y="14" width="4" height="18" fill="currentColor" rx="1"/>
+      <rect x="29" y="10" width="4" height="22" fill="currentColor" rx="1"/>
+    </symbol>
+    <symbol id="m-tide" viewBox="0 0 40 40">
+      <path d="M6 16 C11 12, 14 20, 20 16 C26 12, 29 20, 34 16" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <path d="M6 22 C11 18, 14 26, 20 22 C26 18, 29 26, 34 22" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".75"/>
+      <path d="M6 28 C11 24, 14 32, 20 28 C26 24, 29 32, 34 28" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+    <symbol id="m-quill" viewBox="0 0 40 40">
+      <rect x="8" y="12" width="22" height="2.4" rx="1.2" fill="currentColor"/>
+      <rect x="8" y="19" width="16" height="2.4" rx="1.2" fill="currentColor" opacity=".75"/>
+      <rect x="8" y="26" width="20" height="2.4" rx="1.2" fill="currentColor" opacity=".55"/>
+    </symbol>
+
+    <!-- ━━━ ACTION ICONS ━━━ -->
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13 L10 18 L19 7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12 C5 7, 9 5, 12 5 S19 7, 22 12 C19 17, 15 19, 12 19 S5 17, 2 12 Z" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.4" fill="none"/></symbol>
+    <symbol id="i-snooze" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M9 9 H15 L9 15 H15" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="6" cy="17" r="2.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M8 8.5 L20 16 M8 15.5 L20 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M3 18 L7 13 L11 16 L16 8 L21 13" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5 V19 M6 13 L12 19 L18 13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 L21 20 H3 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/><path d="M12 11 V14 M12 17 V17.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12 H19 M13 6 L19 12 L13 18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+    <!-- ━━━ TIER ICONS ━━━ -->
+    <symbol id="t-watch" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+    <symbol id="t-propose" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M8 1.5 A6.5 6.5 0 0 1 8 14.5 Z" fill="currentColor"/></symbol>
+    <symbol id="t-act" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="currentColor"/></symbol>
+
+    <!-- ━━━ CHANNEL ICONS · where alerts route ━━━ -->
+    <symbol id="ch-push" viewBox="0 0 24 24">
+      <path d="M6 16 V11 C6 7.5, 8.5 5, 12 5 S18 7.5, 18 11 V16 L20 18 H4 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+      <path d="M10 21 H14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ch-slack" viewBox="0 0 24 24">
+      <path d="M9 4 V20 M15 4 V20 M4 9 H20 M4 15 H20" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ch-telegram" viewBox="0 0 24 24">
+      <path d="M3 11 L21 4 L17 21 L11 14 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+      <path d="M11 14 L21 4" stroke="currentColor" stroke-width="1.2" fill="none"/>
+    </symbol>
+    <symbol id="ch-whatsapp" viewBox="0 0 24 24">
+      <path d="M4 20 L5.5 16 C4.5 14.6, 4 13 4 11 C 4 6.6, 7.6 3, 12 3 S 20 6.6, 20 11 S 16.4 19, 12 19 C 10.4 19, 8.8 18.5, 7.5 17.5 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+      <path d="M9 9 C9 11, 11 13, 13 13 L14.5 11.5 L17 13 L16 14.5 C15 16, 12 15, 10 13 S 8 9.5, 9.5 8.5 L11 11" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/>
+    </symbol>
+    <symbol id="ch-sms" viewBox="0 0 24 24">
+      <path d="M3 6 C3 5, 4 4, 5 4 H19 C20 4, 21 5, 21 6 V14 C21 15, 20 16, 19 16 H10 L5 20 V16 C4 16, 3 15, 3 14 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+      <circle cx="9" cy="10" r=".8" fill="currentColor"/>
+      <circle cx="12" cy="10" r=".8" fill="currentColor"/>
+      <circle cx="15" cy="10" r=".8" fill="currentColor"/>
+    </symbol>
+    <symbol id="ch-email" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+      <path d="M3 7 L12 13 L21 7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ch-phone" viewBox="0 0 24 24">
+      <path d="M5 4 L8 4 L10 9 L8 11 C9 14, 10 15, 13 16 L15 14 L20 16 V19 C20 20, 19 21, 18 21 C10 21, 3 14, 3 6 C3 5, 4 4, 5 4 Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- ━━━ NAV ICONS · bottom tab bar ━━━ -->
+    <symbol id="n-desk" viewBox="0 0 24 24">
+      <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <path d="M8 18 V20 M16 18 V20 M3 14 H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="n-store" viewBox="0 0 24 24">
+      <path d="M4 8 L6 4 H18 L20 8 V19 C20 20, 19 21, 18 21 H6 C5 21, 4 20, 4 19 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      <path d="M4 8 H20 M9 12 C9 14, 11 15, 12 15 S15 14, 15 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="n-walk" viewBox="0 0 24 24">
+      <path d="M14 4 L11 8 L13 13 L9 17 L11 20" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="14.5" cy="3.5" r="1.3" fill="currentColor"/>
+      <path d="M13 13 L17 11" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- iOS status bar mini icons -->
+    <symbol id="ios-signal" viewBox="0 0 18 12"><path d="M1 11 V9 M4 11 V7 M7 11 V5 M10 11 V3 M13 11 V1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+    <symbol id="ios-wifi" viewBox="0 0 18 12"><path d="M2 5 C5 2, 13 2, 16 5 M4.5 7.5 C6 6, 12 6, 13.5 7.5 M7 10 C7.5 9.5, 10.5 9.5, 11 10" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="ios-batt" viewBox="0 0 22 12"><rect x="1" y="1.5" width="18" height="9" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="3" y="3.5" width="14" height="5" rx=".5" fill="currentColor"/><rect x="20" y="4.5" width="1.5" height="3" rx=".5" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<!-- ════════════════════════════════════════════════════════════
+     MASTHEAD · desktop top, mobile shows just wordmark
+     ════════════════════════════════════════════════════════════ -->
+<header class="masthead-bar">
+  <div class="brand">
+    <span class="signed">Kelly · 07:14 EDT</span>
+    <a class="wordmark" href="#">
+      <svg class="star" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M7 1 L7.8 6.2 L13 7 L7.8 7.8 L7 13 L6.2 7.8 L1 7 L6.2 6.2 Z" fill="currentColor"/>
+      </svg>
+      alphawalk
+    </a>
+    <span class="live"><span class="dot"></span>Pre-open</span>
+  </div>
+  <nav class="nav-row" role="tablist" aria-label="primary">
+    <button class="nav-link is-active" role="tab" data-tab="desk" aria-selected="true">Desk</button>
+    <button class="nav-link" role="tab" data-tab="store" aria-selected="false">Store</button>
+    <button class="nav-link" role="tab" data-tab="walk" aria-selected="false">Walk</button>
+  </nav>
+</header>
+
+<!-- ════════════════════════════════════════════════════════════
+     SHELL · tab content
+     ════════════════════════════════════════════════════════════ -->
+<main class="shell">
+
+  <!-- ════════════════════ THE DESK ════════════════════ -->
+  <section class="tab-pane is-active" id="tab-desk" role="tabpanel">
+
+    <p class="eyebrow"><span class="num">01</span></p>
+    <h1 class="title">Desk</h1>
+    <p class="subtitle">
+      <span><span class="gold">6</span> briefs</span><span class="dot"></span>
+      <span><span class="gold">1</span> needs you</span>
+    </p>
+
+    <hr class="hr"/>
+
+    <!-- 01 · NEEDS YOU -->
+    <header class="sec-head">
+      <span class="idx"><span class="n">01</span>Needs you</span>
+      <span class="meta">04:12 EDT</span>
+    </header>
+
+    <div class="instrument-stage">
+      <div class="instrument" aria-label="hedge gauge">
+        <svg viewBox="0 0 340 340">
+          <circle cx="170" cy="170" r="140" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="14"/>
+          <g stroke="rgba(245,242,234,.22)" stroke-linecap="round">
+            <line x1="170" y1="20" x2="170" y2="32" stroke-width="1.5"/>
+            <line x1="320" y1="170" x2="308" y2="170" stroke-width="1.5"/>
+            <line x1="170" y1="320" x2="170" y2="308" stroke-width="1.5"/>
+            <line x1="20"  y1="170" x2="32"  y2="170" stroke-width="1.5"/>
+            <line x1="245" y1="40"  x2="240" y2="50" />
+            <line x1="295" y1="100" x2="285" y2="105"/>
+            <line x1="295" y1="240" x2="285" y2="235"/>
+            <line x1="245" y1="300" x2="240" y2="290"/>
+            <line x1="95"  y1="300" x2="100" y2="290"/>
+            <line x1="45"  y1="240" x2="55"  y2="235"/>
+            <line x1="45"  y1="100" x2="55"  y2="105"/>
+            <line x1="95"  y1="40"  x2="100" y2="50" />
+          </g>
+          <circle cx="170" cy="170" r="140" fill="none"
+            stroke="rgba(245,242,234,.85)" stroke-width="14"
+            stroke-dasharray="657 880" stroke-linecap="round"
+            transform="rotate(-90 170 170)"/>
+          <circle cx="170" cy="170" r="140" fill="none"
+            stroke="#d4a44a" stroke-width="14"
+            stroke-dasharray="2 878" stroke-linecap="round"
+            stroke-dashoffset="-585"
+            transform="rotate(-90 170 170)"/>
+          <g font-family="Inter Tight, sans-serif" font-size="9" font-weight="500" fill="#d4a44a" letter-spacing=".24em">
+            <text x="278" y="240" text-anchor="middle">100</text>
+          </g>
+          <g font-family="Inter Tight, sans-serif" font-size="9" font-weight="500" fill="rgba(245,242,234,.5)" letter-spacing=".24em">
+            <text x="170" y="22" text-anchor="middle">0</text>
+            <text x="318" y="174" text-anchor="middle">75</text>
+            <text x="170" y="335" text-anchor="middle">150</text>
+            <text x="22" y="174" text-anchor="middle">25</text>
+          </g>
+          <circle cx="170" cy="170" r="108" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <use href="#m-vega" x="150" y="56" width="40" height="40" color="rgba(245,242,234,.6)"/>
+        </svg>
+        <div class="label">
+          <span class="delta gold"><span class="sign">−</span>12<span style="font-size:.55em;vertical-align:.2em;margin-left:1px">%</span></span>
+          <span class="action">Trim hedge</span>
+          <span class="from-to"><b>112</b> → <b style="color:var(--gold)">100</b></span>
+        </div>
+      </div>
+
+      <div class="feature-meta">
+        <h2 class="feature-name">Vega</h2>
+        <p class="feature-tagline">Volatility<span class="dot"></span>4m ago</p>
+
+        <div class="rings">
+          <div class="ring">
+            <svg class="ring-svg" viewBox="0 0 48 48">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(245,242,234,.1)" stroke-width="3"/>
+              <circle cx="24" cy="24" r="20" fill="none" stroke="#d4a44a" stroke-width="3"
+                stroke-dasharray="89.2 125.7" stroke-linecap="round"
+                transform="rotate(-90 24 24)"/>
+            </svg>
+            <span class="ring-val">71<span style="font-size:.5em;vertical-align:.3em">%</span></span>
+            <span class="ring-lbl">Acted</span>
+          </div>
+          <div class="ring">
+            <svg class="ring-svg" viewBox="0 0 48 48">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(245,242,234,.1)" stroke-width="3"/>
+              <circle cx="24" cy="24" r="20" fill="none" stroke="#f5f2ea" stroke-width="3"
+                stroke-dasharray="125.7 0" stroke-linecap="round"
+                transform="rotate(-90 24 24)"/>
+            </svg>
+            <span class="ring-val">34</span>
+            <span class="ring-lbl">Briefs</span>
+          </div>
+          <div class="ring">
+            <svg class="ring-svg" viewBox="0 0 48 48">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(245,242,234,.1)" stroke-width="3"/>
+            </svg>
+            <span class="ring-val">0</span>
+            <span class="ring-lbl">False</span>
+          </div>
+        </div>
+
+        <!-- 📡 DELIVERED TO · channel chips -->
+        <div class="delivered">
+          <span class="lbl"><span class="sent-dot"></span>Sent to you · 4m ago</span>
+          <div class="chs">
+            <span class="ch-chip"><svg><use href="#ch-push"/></svg>Push</span>
+            <span class="ch-chip"><svg><use href="#ch-slack"/></svg>#alpha-crew</span>
+            <span class="ch-chip urgent"><svg><use href="#ch-sms"/></svg>SMS</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="act-btn primary"><svg><use href="#i-check"/></svg>Approve</button>
+          <button class="act-btn icon-only" aria-label="Read brief"><svg><use href="#i-eye"/></svg></button>
+          <button class="act-btn icon-only" aria-label="Defer"><svg><use href="#i-snooze"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="hr"/>
+
+    <!-- 02 · ON THE DESK -->
+    <header class="sec-head">
+      <span class="idx"><span class="n">02</span>On the desk</span>
+      <span class="meta">5 hires</span>
+    </header>
+
+    <div class="dial-grid">
+
+      <article class="dial-card" tabindex="0">
+        <svg class="dial-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <line x1="60" y1="60" x2="76" y2="80" stroke="rgba(245,242,234,.7)" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="60" cy="60" r="3" fill="rgba(245,242,234,.8)"/>
+          <use href="#m-atlas" x="40" y="14" width="40" height="40" color="rgba(245,242,234,.6)"/>
+          <text x="60" y="14" text-anchor="middle" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">N</text>
+          <text x="106" y="63" text-anchor="middle" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">E</text>
+          <text x="60" y="113" text-anchor="middle" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">S</text>
+          <text x="14" y="63" text-anchor="middle" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">W</text>
+        </svg>
+        <h3 class="dial-name">Atlas</h3>
+        <p class="dial-meta"><span class="state-dot"></span>Macro · 2h</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-email"/></svg></span>
+        </div>
+      </article>
+
+      <article class="dial-card" tabindex="0">
+        <svg class="dial-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(245,242,234,.07)" stroke-width="3"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(245,242,234,.8)" stroke-width="3"
+            stroke-dasharray="179 289" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+          <use href="#m-orion" x="40" y="40" width="40" height="40" color="rgba(245,242,234,.85)"/>
+        </svg>
+        <h3 class="dial-name">Orion</h3>
+        <p class="dial-meta"><span class="state-dot"></span>Earnings · 5h</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+        </div>
+      </article>
+
+      <article class="dial-card proposing" tabindex="0">
+        <svg class="dial-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <path d="M14 78 A46 46 0 0 1 106 78" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M14 78 A46 46 0 0 1 106 78" fill="none" stroke="#d4a44a" stroke-width="4" stroke-linecap="round"
+            stroke-dasharray="103 144"/>
+          <line x1="60" y1="78" x2="86" y2="42" stroke="#d4a44a" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="60" cy="78" r="3.5" fill="#d4a44a"/>
+          <text x="14" y="92" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">0</text>
+          <text x="106" y="92" text-anchor="end" font-family="Inter Tight" font-size="8" font-weight="500" letter-spacing=".24em" fill="rgba(245,242,234,.4)">1.0</text>
+          <text x="60" y="102" text-anchor="middle" font-family="Bebas Neue" font-size="22" fill="#d4a44a">0.71</text>
+          <use href="#m-ridge" x="40" y="14" width="40" height="40" color="rgba(245,242,234,.6)"/>
+        </svg>
+        <h3 class="dial-name">Ridge</h3>
+        <p class="dial-meta proposing"><span class="state-dot"></span>Risk · Propose · 6h</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+        </div>
+      </article>
+
+      <article class="dial-card" tabindex="0">
+        <svg class="dial-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <g fill="rgba(245,242,234,.7)">
+            <rect x="22" y="68" width="3" height="14" rx="1.5"/>
+            <rect x="28" y="62" width="3" height="20" rx="1.5"/>
+            <rect x="34" y="48" width="3" height="34" rx="1.5" fill="#d4a44a"/>
+            <rect x="40" y="56" width="3" height="26" rx="1.5"/>
+            <rect x="46" y="64" width="3" height="18" rx="1.5"/>
+            <rect x="52" y="70" width="3" height="12" rx="1.5" opacity=".6"/>
+            <rect x="58" y="58" width="3" height="24" rx="1.5"/>
+            <rect x="64" y="66" width="3" height="16" rx="1.5"/>
+            <rect x="70" y="72" width="3" height="10" rx="1.5" opacity=".5"/>
+            <rect x="76" y="60" width="3" height="22" rx="1.5"/>
+            <rect x="82" y="68" width="3" height="14" rx="1.5"/>
+            <rect x="88" y="64" width="3" height="18" rx="1.5"/>
+            <rect x="94" y="72" width="3" height="10" rx="1.5" opacity=".4"/>
+          </g>
+          <use href="#m-echo" x="40" y="14" width="40" height="40" color="rgba(245,242,234,.6)"/>
+        </svg>
+        <h3 class="dial-name">Echo</h3>
+        <p class="dial-meta"><span class="state-dot"></span>Narrative · 38m</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-email"/></svg></span>
+        </div>
+      </article>
+
+      <article class="dial-card acting" tabindex="0">
+        <svg class="dial-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(245,242,234,.07)" stroke-width="3"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#d4a44a" stroke-width="3"
+            stroke-dasharray="22 289" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+          <g stroke="rgba(245,242,234,.16)" stroke-width=".8">
+            <line x1="60" y1="6"  x2="60" y2="11" stroke="#d4a44a" stroke-width="1.3"/>
+            <line x1="60" y1="109" x2="60" y2="114" />
+          </g>
+          <text x="60" y="108" text-anchor="middle" font-family="Bebas Neue" font-size="22" fill="#d4a44a">4/52</text>
+          <use href="#m-forge" x="40" y="34" width="40" height="40" color="rgba(245,242,234,.85)"/>
+        </svg>
+        <h3 class="dial-name">Forge</h3>
+        <p class="dial-meta acting"><span class="state-dot"></span>Accumulation · Acted · 06:30</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini urgent"><svg><use href="#ch-email"/></svg></span>
+        </div>
+      </article>
+    </div>
+
+    <hr class="hr"/>
+
+    <!-- ✨ 03 · REACHES YOU · the proactive layer -->
+    <header class="sec-head">
+      <span class="idx"><span class="n">03</span>Reaches you</span>
+      <span class="meta">Push · Slack · iMessage · Email</span>
+    </header>
+
+    <div class="reach">
+
+      <!-- iPhone-style notification mockup -->
+      <div class="phone-preview" aria-label="phone notification preview">
+        <div class="ph-status">
+          <span>9:41</span>
+          <div class="ph-r">
+            <svg><use href="#ios-signal"/></svg>
+            <svg><use href="#ios-wifi"/></svg>
+            <svg style="width:22px;height:12px"><use href="#ios-batt"/></svg>
+          </div>
+        </div>
+        <div class="ph-date">19</div>
+        <div class="ph-day">Tuesday · May</div>
+
+        <div class="ph-card" style="margin-bottom:8px">
+          <div class="ph-card-hd">
+            <span class="app"><span class="icn"></span>alphawalk · Vega</span>
+            <span class="time">now</span>
+          </div>
+          <div class="ph-title">Trim the VIX-call ladder by 12%.</div>
+          <div class="ph-body">Hedge overcovering. One tap to approve.</div>
+          <div class="ph-actions">
+            <button class="go">Approve</button>
+            <button>Read</button>
+            <button>Later</button>
+          </div>
+        </div>
+
+        <div class="ph-card" style="opacity:.7">
+          <div class="ph-card-hd">
+            <span class="app"><span class="icn"></span>alphawalk · Forge</span>
+            <span class="time">7m ago</span>
+          </div>
+          <div class="ph-title">Bought your weekly tranche.</div>
+          <div class="ph-body">$12 under the 20-day. Cap held.</div>
+        </div>
+      </div>
+
+      <!-- Slack-style channel + Channels grid -->
+      <div>
+        <div class="slack-preview">
+          <div class="sl-channel">
+            <svg><use href="#ch-slack"/></svg>
+            #alpha-crew
+            <span class="time">07:12 EDT</span>
+          </div>
+          <div class="sl-msg">
+            <div class="sl-avatar"><svg><use href="#m-vega"/></svg></div>
+            <div class="sl-body">
+              <div class="sl-who">
+                <span class="name">Vega</span>
+                <span class="app-tag">APP</span>
+                <span class="ts">07:12 · proposing</span>
+              </div>
+              <div class="sl-text">Trim the VIX-call ladder by <code>−12%</code>. Hedge overcovering by <b>12%</b>; trimming the front two strikes reduces premium drag without disturbing the tail-risk cap.</div>
+              <div class="sl-actions">
+                <button class="go">Approve</button>
+                <button>Read brief</button>
+                <button>Defer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channels-grid">
+          <div class="channel-card">
+            <span class="ic"><svg><use href="#ch-push"/></svg></span>
+            <div class="body">
+              <div class="nm">Push</div>
+              <div class="st"><span class="stdot"></span>Always on</div>
+            </div>
+            <span class="ct">6</span>
+          </div>
+          <div class="channel-card">
+            <span class="ic"><svg><use href="#ch-slack"/></svg></span>
+            <div class="body">
+              <div class="nm">Slack</div>
+              <div class="st"><span class="stdot"></span>#alpha-crew</div>
+            </div>
+            <span class="ct">6</span>
+          </div>
+          <div class="channel-card">
+            <span class="ic"><svg><use href="#ch-sms"/></svg></span>
+            <div class="body">
+              <div class="nm">iMessage</div>
+              <div class="st"><span class="stdot"></span>Urgent only</div>
+            </div>
+            <span class="ct">1</span>
+          </div>
+          <div class="channel-card muted">
+            <span class="ic"><svg><use href="#ch-email"/></svg></span>
+            <div class="body">
+              <div class="nm">Email</div>
+              <div class="st"><span class="stdot"></span>Daily digest</div>
+            </div>
+            <span class="ct dim">07:00</span>
+          </div>
+          <div class="channel-card muted">
+            <span class="ic"><svg><use href="#ch-telegram"/></svg></span>
+            <div class="body">
+              <div class="nm">Telegram</div>
+              <div class="st"><span class="stdot"></span>Not connected</div>
+            </div>
+            <span class="ct dim">+</span>
+          </div>
+          <div class="channel-card muted">
+            <span class="ic"><svg><use href="#ch-phone"/></svg></span>
+            <div class="body">
+              <div class="nm">Phone</div>
+              <div class="st"><span class="stdot"></span>Critical only</div>
+            </div>
+            <span class="ct dim">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="hr"/>
+
+    <!-- 04 · ACTIVITY -->
+    <header class="sec-head">
+      <span class="idx"><span class="n">04</span>As it happens</span>
+      <span class="meta">Since open</span>
+    </header>
+
+    <div class="activity">
+      <div class="act-row">
+        <span class="ts">07:12</span>
+        <svg class="avatar"><use href="#m-vega"/></svg>
+        <span class="what"><span class="who">Vega</span><svg class="icn"><use href="#i-scissors"/></svg> Trim VIX-call ladder</span>
+        <span class="delta gold">−12%</span>
+        <span class="ch-trail"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-sms"/></svg></span>
+      </div>
+      <div class="act-row">
+        <span class="ts">07:08</span>
+        <svg class="avatar"><use href="#m-ridge"/></svg>
+        <span class="what"><span class="who">Ridge</span><svg class="icn"><use href="#i-alert"/></svg> Correlation flag</span>
+        <span class="delta gold">0.71</span>
+        <span class="ch-trail"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+      <div class="act-row">
+        <span class="ts">06:42</span>
+        <svg class="avatar"><use href="#m-echo"/></svg>
+        <span class="what"><span class="who">Echo</span><svg class="icn"><use href="#i-spark"/></svg> "AI capex digestion"</span>
+        <span class="delta">+3.4×</span>
+        <span class="ch-trail"><svg><use href="#ch-slack"/></svg></span>
+      </div>
+      <div class="act-row">
+        <span class="ts">06:30</span>
+        <svg class="avatar"><use href="#m-forge"/></svg>
+        <span class="what"><span class="who">Forge</span><svg class="icn"><use href="#i-arrow-down"/></svg> Weekly tranche bought</span>
+        <span class="delta gold">$12</span>
+        <span class="ch-trail"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-email"/></svg></span>
+      </div>
+      <div class="act-row">
+        <span class="ts">05:48</span>
+        <svg class="avatar"><use href="#m-orion"/></svg>
+        <span class="what"><span class="who">Orion</span><svg class="icn"><use href="#i-spark"/></svg> NVDA above the high end</span>
+        <span class="delta">+18%</span>
+        <span class="ch-trail"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+      <div class="act-row">
+        <span class="ts">05:12</span>
+        <svg class="avatar"><use href="#m-atlas"/></svg>
+        <span class="what"><span class="who">Atlas</span><svg class="icn"><use href="#i-arrow-down"/></svg> DXY soft</span>
+        <span class="delta">4.10%</span>
+        <span class="ch-trail"><svg><use href="#ch-slack"/></svg></span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ════════════════════ THE STORE ════════════════════ -->
+  <section class="tab-pane" id="tab-store" role="tabpanel">
+
+    <p class="eyebrow"><span class="num">02</span></p>
+    <h1 class="title">Store</h1>
+    <p class="subtitle">
+      <span><span class="gold">8</span> specialists</span><span class="dot"></span>
+      <span><span class="gold">2</span> new</span>
+    </p>
+
+    <hr class="hr"/>
+
+    <div class="filters">
+      <button class="chip is-active">All</button>
+      <button class="chip">Macro</button>
+      <button class="chip">Vol</button>
+      <button class="chip">Earnings</button>
+      <button class="chip">Risk</button>
+      <button class="chip">Narrative</button>
+      <button class="chip">Flows</button>
+      <button class="chip">Other</button>
+    </div>
+
+    <div class="store-grid">
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-atlas" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.8)"/>
+        </svg>
+        <h3 class="name">Atlas</h3>
+        <p class="role">Macro</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-sms"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-vega" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.8)"/>
+        </svg>
+        <h3 class="name">Vega</h3>
+        <p class="role">Volatility</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+          <span class="ch-mini urgent"><svg><use href="#ch-sms"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-orion" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.8)"/>
+        </svg>
+        <h3 class="name">Orion</h3>
+        <p class="role">Earnings</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-ridge" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.8)"/>
+        </svg>
+        <h3 class="name">Ridge</h3>
+        <p class="role">Risk</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-echo" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.8)"/>
+        </svg>
+        <h3 class="name">Echo</h3>
+        <p class="role">Narrative</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card hired">
+        <span class="badge">ON DESK</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-forge" x="32" y="32" width="40" height="40" color="#d4a44a"/>
+        </svg>
+        <h3 class="name">Forge</h3>
+        <p class="role">Accumulation</p>
+        <div class="ch-row">
+          <span class="ch-mini on"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini on"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Manage <svg><use href="#i-arrow-r"/></svg></button>
+      </article>
+
+      <article class="store-card new">
+        <span class="new-badge"><span class="nd"></span>NEW</span>
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(212,164,74,.18)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-tide" x="32" y="32" width="40" height="40" color="#d4a44a"/>
+        </svg>
+        <h3 class="name">Tide</h3>
+        <p class="role">Flows</p>
+        <div class="ch-row">
+          <span class="ch-mini"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-telegram"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Hire <svg><use href="#i-plus"/></svg></button>
+      </article>
+
+      <article class="store-card">
+        <svg class="dial-svg" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="1"/>
+          <circle cx="52" cy="52" r="40" fill="none" stroke="rgba(245,242,234,.06)" stroke-width="1" stroke-dasharray="3 5"/>
+          <use href="#m-quill" x="32" y="32" width="40" height="40" color="rgba(245,242,234,.7)"/>
+        </svg>
+        <h3 class="name">Quill</h3>
+        <p class="role">Portfolio</p>
+        <div class="ch-row">
+          <span class="ch-mini"><svg><use href="#ch-push"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-slack"/></svg></span>
+          <span class="ch-mini"><svg><use href="#ch-email"/></svg></span>
+        </div>
+        <button class="hire-btn">Hire <svg><use href="#i-plus"/></svg></button>
+      </article>
+
+    </div>
+
+  </section>
+
+  <!-- ════════════════════ THE WALK ════════════════════ -->
+  <section class="tab-pane" id="tab-walk" role="tabpanel">
+
+    <p class="eyebrow"><span class="num">03</span></p>
+    <h1 class="title">Walk</h1>
+    <p class="subtitle">
+      <span><span class="gold">128</span> events</span><span class="dot"></span>
+      <span>last 30d</span>
+    </p>
+
+    <hr class="hr"/>
+
+    <div class="log-filters-desk">
+      <button class="chip is-active">All</button>
+      <button class="chip">Alerts</button>
+      <button class="chip">Your moves</button>
+      <button class="chip">Trades</button>
+      <button class="chip">System</button>
+    </div>
+
+    <div class="walk-log">
+
+      <div class="walk-day today">Today <span class="ln"></span><span class="ct">Tue · May 19</span></div>
+
+      <div class="walk-row">
+        <span class="time">07:12</span>
+        <div class="actor"><svg><use href="#m-vega"/></svg></div>
+        <div class="body">
+          <span class="who">Vega</span>
+          <span class="act">proposed trim</span>
+          <span class="meta"><span class="n">−12%</span> on VIX-call ladder</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg class="urg"><use href="#ch-sms"/></svg></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">07:08</span>
+        <div class="actor"><svg><use href="#m-ridge"/></svg></div>
+        <div class="body">
+          <span class="who">Ridge</span>
+          <span class="act">raised flag</span>
+          <span class="meta">correlation <span class="n">0.71</span> · book-wide</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">06:42</span>
+        <div class="actor"><svg><use href="#m-echo"/></svg></div>
+        <div class="body">
+          <span class="who">Echo</span>
+          <span class="act">updated themes</span>
+          <span class="meta">"AI capex digestion" <span class="n">+3.4×</span> · "Onshoring" cooled</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row acting">
+        <span class="time">06:30</span>
+        <div class="actor"><svg><use href="#m-forge"/></svg></div>
+        <div class="body">
+          <span class="who">Forge</span>
+          <span class="act">bought weekly tranche</span>
+          <span class="meta"><span class="n">$12</span> under 20d avg · cap held</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-email"/></svg></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">05:48</span>
+        <div class="actor"><svg><use href="#m-orion"/></svg></div>
+        <div class="body">
+          <span class="who">Orion</span>
+          <span class="act">filed brief</span>
+          <span class="meta">NVDA above the high end · guidance <span class="n">+18%</span></span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">05:30</span>
+        <div class="actor"><svg><use href="#m-atlas"/></svg></div>
+        <div class="body">
+          <span class="who">Atlas</span>
+          <span class="act">pre-Asia note</span>
+          <span class="meta">DXY soft · 2-yr under <span class="n">4.10%</span></span>
+        </div>
+        <span class="ch"><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row system">
+        <span class="time">04:00</span>
+        <div class="actor">·</div>
+        <div class="body">
+          <span class="act">Pre-open began</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-day">Yesterday <span class="ln"></span><span class="ct">Mon · May 18</span></div>
+
+      <div class="walk-row user">
+        <span class="time">17:42</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">promoted Atlas → Propose</span>
+          <span class="meta">macro signals can now suggest one-tap actions</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row user">
+        <span class="time">16:30</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">approved Vega's hedge add</span>
+          <span class="meta"><span class="n">+8%</span> to VIX-call ladder</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">14:22</span>
+        <div class="actor"><svg><use href="#m-vega"/></svg></div>
+        <div class="body">
+          <span class="who">Vega</span>
+          <span class="act">proposed hedge add</span>
+          <span class="meta">CPI print spiked realized vol · <span class="n">+8%</span> sizing</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row user">
+        <span class="time">11:15</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">promoted Forge → Act tier</span>
+          <span class="meta">cap <span class="n">$500/wk</span> · auto buys under 20d avg</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row system">
+        <span class="time">09:30</span>
+        <div class="actor">·</div>
+        <div class="body">
+          <span class="act">Market opened</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row acting">
+        <span class="time">06:30</span>
+        <div class="actor"><svg><use href="#m-forge"/></svg></div>
+        <div class="body">
+          <span class="who">Forge</span>
+          <span class="act">bought weekly tranche</span>
+          <span class="meta"><span class="n">$8</span> under 20d · first auto-buy on Act tier</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-email"/></svg></span>
+      </div>
+
+      <div class="walk-day">Sat · May 17 <span class="ln"></span><span class="ct">markets closed</span></div>
+
+      <div class="walk-row user">
+        <span class="time">22:14</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">adjusted Ridge threshold</span>
+          <span class="meta">correlation alert now triggers above <span class="n">0.65</span></span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row user">
+        <span class="time">15:42</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">hired Tide → Watch</span>
+          <span class="meta">routing to push + #alpha-crew</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-day">Fri · May 16 <span class="ln"></span><span class="ct"></span></div>
+
+      <div class="walk-row user">
+        <span class="time">13:42</span>
+        <div class="actor">YOU</div>
+        <div class="body">
+          <span class="who">You</span>
+          <span class="act">approved Ridge's rebalance</span>
+          <span class="meta">tech sleeve trimmed to target · <span class="n">−3.2pts</span></span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+      <div class="walk-row">
+        <span class="time">13:20</span>
+        <div class="actor"><svg><use href="#m-ridge"/></svg></div>
+        <div class="body">
+          <span class="who">Ridge</span>
+          <span class="act">proposed rebalance</span>
+          <span class="meta">tech overweight <span class="n">8pts</span> above target</span>
+        </div>
+        <span class="ch"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span>
+      </div>
+
+      <div class="walk-row system">
+        <span class="time">09:30</span>
+        <div class="actor">·</div>
+        <div class="body">
+          <span class="act">Market opened</span>
+        </div>
+        <span class="ch"></span>
+      </div>
+
+    </div>
+
+    <div class="walk-close">
+      <p class="text">That's <span class="gold">the walk</span>.</p>
+      <button class="act-btn"><svg><use href="#i-arrow-r"/></svg>Yesterday's walk</button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════════
+     📱 BOTTOM TAB BAR · mobile only
+     ════════════════════════════════════════════════════════════ -->
+<nav class="tabbar" role="tablist" aria-label="primary mobile">
+  <button class="tabbar-item is-active" data-tab="desk" aria-selected="true">
+    <svg><use href="#n-desk"/></svg>
+    <span class="lbl">Desk</span>
+    <span class="badge">1</span>
+  </button>
+  <button class="tabbar-item" data-tab="store" aria-selected="false">
+    <svg><use href="#n-store"/></svg>
+    <span class="lbl">Store</span>
+  </button>
+  <button class="tabbar-item" data-tab="walk" aria-selected="false">
+    <svg><use href="#n-walk"/></svg>
+    <span class="lbl">Walk</span>
+  </button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     📱 MOBILE WEB APP · activates below 820px viewport
+     same data, native iOS-style chrome, bookmarkable as a PWA
+     ════════════════════════════════════════════════════════════ -->
+<div class="m-app">
+  <!-- iOS status bar -->
+  <div class="m-status">
+    <span class="time">9:41</span>
+    <span class="indicators">
+      <svg width="18" height="12" fill="currentColor"><use href="#ios-signal"/></svg>
+      <svg width="18" height="12" fill="none"><use href="#ios-wifi"/></svg>
+      <svg width="25" height="12" fill="none"><use href="#ios-batt"/></svg>
+    </span>
+  </div>
+
+  <main class="m-main">
+
+    <!-- ═══ DESK ═══ -->
+    <section class="m-pane is-active" id="m-desk">
+      <header class="m-titlebar">
+        <div class="m-date">Tue · May 19 · Pre-open</div>
+        <h1 class="m-name">Desk</h1>
+        <div class="m-sub">
+          <span><span class="gold">6</span> briefs</span><span class="dot"></span>
+          <span><span class="gold">1</span> needs you</span>
+        </div>
+      </header>
+
+      <!-- featured Vega alert -->
+      <div class="m-alert">
+        <p class="m-alert-tag"><span class="d"></span>Needs you · 04:12</p>
+        <div class="m-alert-row">
+          <div class="m-gauge" aria-hidden="true">
+            <svg viewBox="0 0 88 88">
+              <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(245,242,234,.08)" stroke-width="6"/>
+              <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(245,242,234,.7)" stroke-width="6"
+                stroke-dasharray="169 226" stroke-linecap="round" transform="rotate(-90 44 44)"/>
+              <circle cx="44" cy="44" r="36" fill="none" stroke="#d4a44a" stroke-width="6"
+                stroke-dasharray="2 224" stroke-linecap="round" stroke-dashoffset="-150" transform="rotate(-90 44 44)"/>
+              <use href="#m-vega" x="32" y="14" width="24" height="24" color="rgba(245,242,234,.5)"/>
+            </svg>
+            <div class="glabel"><span class="v"><span class="sign">−</span>12<span style="font-size:.5em;vertical-align:.25em">%</span></span></div>
+          </div>
+          <div>
+            <h2 class="who">Vega</h2>
+            <p class="role">Volatility · 4m ago</p>
+          </div>
+        </div>
+        <p class="m-alert-body"><b>Trim the VIX-call ladder by <span class="n">12%</span>.</b> Hedge overcovering. One tap to approve.</p>
+        <div class="m-rings">
+          <div class="r"><span class="num gold">71<span style="font-size:.5em;vertical-align:.3em">%</span></span><span class="l">Acted</span></div>
+          <div class="r"><span class="num">34</span><span class="l">Briefs</span></div>
+          <div class="r"><span class="num">0</span><span class="l">False</span></div>
+        </div>
+        <div class="m-chs">
+          <span class="sent"><span class="sd"></span>Sent · 4m</span>
+          <span class="icons"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg class="urg"><use href="#ch-sms"/></svg></span>
+        </div>
+        <div class="m-acts">
+          <button class="m-btn primary"><svg><use href="#i-check"/></svg>Approve</button>
+          <button class="m-btn icon-only" aria-label="Read"><svg><use href="#i-eye"/></svg></button>
+          <button class="m-btn icon-only" aria-label="Defer"><svg><use href="#i-snooze"/></svg></button>
+        </div>
+      </div>
+
+      <!-- roster list -->
+      <header class="m-sec"><span class="l">On the desk</span><span class="r">5 hires</span></header>
+      <div class="m-list">
+        <div class="m-row">
+          <div class="m-rowicn"><svg color="rgba(245,242,234,.85)"><use href="#m-atlas"/></svg></div>
+          <div><h3 class="m-rowname">Atlas</h3><div class="m-rowmeta"><span class="pill"><span class="pd"></span>Macro</span><span>2h · soft DXY</span></div></div>
+          <div class="m-rowaside"><span class="t">2h</span><span class="chev"></span></div>
+        </div>
+        <div class="m-row">
+          <div class="m-rowicn"><svg color="rgba(245,242,234,.85)"><use href="#m-orion"/></svg></div>
+          <div><h3 class="m-rowname">Orion</h3><div class="m-rowmeta"><span class="pill"><span class="pd"></span>Earnings</span><span>NVDA above high end</span></div></div>
+          <div class="m-rowaside"><span class="t">5h</span><span class="chev"></span></div>
+        </div>
+        <div class="m-row proposing">
+          <div class="m-rowicn gold"><svg color="#d4a44a"><use href="#m-ridge"/></svg><span class="badge"></span></div>
+          <div><h3 class="m-rowname">Ridge</h3><div class="m-rowmeta"><span class="pill gold"><span class="pd"></span>Propose</span><span>Correlation 0.71</span></div></div>
+          <div class="m-rowaside"><span class="t">6h</span><span class="chev"></span></div>
+        </div>
+        <div class="m-row">
+          <div class="m-rowicn"><svg color="rgba(245,242,234,.85)"><use href="#m-echo"/></svg></div>
+          <div><h3 class="m-rowname">Echo</h3><div class="m-rowmeta"><span class="pill"><span class="pd"></span>Narrative</span><span>"AI capex digestion"</span></div></div>
+          <div class="m-rowaside"><span class="t">38m</span><span class="chev"></span></div>
+        </div>
+        <div class="m-row acting">
+          <div class="m-rowicn gold"><svg color="#d4a44a"><use href="#m-forge"/></svg></div>
+          <div><h3 class="m-rowname">Forge</h3><div class="m-rowmeta"><span class="pill gold"><span class="pd"></span>Acted</span><span>Weekly · $12 under</span></div></div>
+          <div class="m-rowaside"><span class="t">06:30</span><span class="chev"></span></div>
+        </div>
+      </div>
+
+      <!-- channels strip -->
+      <header class="m-sec"><span class="l">Reaches you</span><span class="r">6 channels</span></header>
+      <div class="m-chstrip">
+        <div class="m-chpill gold"><svg><use href="#ch-push"/></svg><span class="nm">Push</span><span class="st"><span class="sd"></span>6</span></div>
+        <div class="m-chpill"><svg><use href="#ch-slack"/></svg><span class="nm">#alpha-crew</span><span class="st"><span class="sd"></span>6</span></div>
+        <div class="m-chpill"><svg><use href="#ch-sms"/></svg><span class="nm">iMessage</span><span class="st"><span class="sd"></span>1</span></div>
+        <div class="m-chpill muted"><svg><use href="#ch-email"/></svg><span class="nm">Email</span><span class="st"><span class="sd"></span>07:00</span></div>
+        <div class="m-chpill muted"><svg><use href="#ch-telegram"/></svg><span class="nm">Telegram</span><span class="st"><span class="sd"></span>Off</span></div>
+        <div class="m-chpill muted"><svg><use href="#ch-phone"/></svg><span class="nm">Phone</span><span class="st"><span class="sd"></span>Critical</span></div>
+      </div>
+
+      <!-- activity feed -->
+      <header class="m-sec"><span class="l">As it happens</span><span class="r">Since open</span></header>
+      <div class="m-feed">
+        <div class="m-feedcard gold">
+          <span class="ic"><svg><use href="#m-vega"/></svg></span>
+          <div><div class="who">Vega</div><div class="txt"><svg><use href="#i-scissors"/></svg>Trim VIX-call ladder</div></div>
+          <div class="right"><span class="delta gold">−12%</span><span class="ts">07:12</span></div>
+        </div>
+        <div class="m-feedcard gold">
+          <span class="ic"><svg><use href="#m-ridge"/></svg></span>
+          <div><div class="who">Ridge</div><div class="txt"><svg><use href="#i-alert"/></svg>Correlation flag</div></div>
+          <div class="right"><span class="delta gold">0.71</span><span class="ts">07:08</span></div>
+        </div>
+        <div class="m-feedcard">
+          <span class="ic"><svg><use href="#m-echo"/></svg></span>
+          <div><div class="who">Echo</div><div class="txt"><svg><use href="#i-spark"/></svg>"AI capex digestion"</div></div>
+          <div class="right"><span class="delta">+3.4×</span><span class="ts">06:42</span></div>
+        </div>
+        <div class="m-feedcard gold">
+          <span class="ic"><svg><use href="#m-forge"/></svg></span>
+          <div><div class="who">Forge</div><div class="txt"><svg><use href="#i-arrow-down"/></svg>Weekly tranche bought</div></div>
+          <div class="right"><span class="delta gold">$12</span><span class="ts">06:30</span></div>
+        </div>
+        <div class="m-feedcard">
+          <span class="ic"><svg><use href="#m-orion"/></svg></span>
+          <div><div class="who">Orion</div><div class="txt"><svg><use href="#i-spark"/></svg>NVDA above the high end</div></div>
+          <div class="right"><span class="delta">+18%</span><span class="ts">05:48</span></div>
+        </div>
+        <div class="m-feedcard">
+          <span class="ic"><svg><use href="#m-atlas"/></svg></span>
+          <div><div class="who">Atlas</div><div class="txt"><svg><use href="#i-arrow-down"/></svg>DXY soft</div></div>
+          <div class="right"><span class="delta">4.10%</span><span class="ts">05:12</span></div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </section>
+
+    <!-- ═══ STORE ═══ -->
+    <section class="m-pane" id="m-store">
+      <header class="m-titlebar">
+        <div class="m-date">8 specialists</div>
+        <h1 class="m-name">Store</h1>
+        <div class="m-sub">
+          <span><span class="gold">6</span> on desk</span><span class="dot"></span>
+          <span><span class="gold">2</span> new</span>
+        </div>
+      </header>
+
+      <div class="m-stfilters">
+        <button class="chip is-active">All</button>
+        <button class="chip">Macro</button>
+        <button class="chip">Vol</button>
+        <button class="chip">Earnings</button>
+        <button class="chip">Risk</button>
+        <button class="chip">Narrative</button>
+        <button class="chip">Flows</button>
+      </div>
+
+      <div class="m-storelist">
+        <article class="m-storetile new">
+          <span class="new-tag">NEW</span>
+          <div class="icn"><svg color="#d4a44a"><use href="#m-tide"/></svg></div>
+          <div>
+            <div class="nm">Tide</div>
+            <div class="role">Flows</div>
+            <div class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-telegram"/></svg><svg><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Hire</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="rgba(245,242,234,.85)"><use href="#m-atlas"/></svg></div>
+          <div>
+            <div class="nm">Atlas</div>
+            <div class="role">Macro</div>
+            <div class="chs"><svg class="on"><use href="#ch-push"/></svg><svg class="on"><use href="#ch-slack"/></svg><svg class="on"><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="rgba(245,242,234,.85)"><use href="#m-vega"/></svg></div>
+          <div>
+            <div class="nm">Vega</div>
+            <div class="role">Volatility</div>
+            <div class="chs"><svg class="on"><use href="#ch-push"/></svg><svg class="on"><use href="#ch-slack"/></svg><svg class="on"><use href="#ch-sms"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="rgba(245,242,234,.85)"><use href="#m-orion"/></svg></div>
+          <div>
+            <div class="nm">Orion</div>
+            <div class="role">Earnings</div>
+            <div class="chs"><svg class="on"><use href="#ch-push"/></svg><svg class="on"><use href="#ch-slack"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="rgba(245,242,234,.85)"><use href="#m-ridge"/></svg></div>
+          <div>
+            <div class="nm">Ridge</div>
+            <div class="role">Risk</div>
+            <div class="chs"><svg class="on"><use href="#ch-push"/></svg><svg class="on"><use href="#ch-slack"/></svg><svg class="on"><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="rgba(245,242,234,.85)"><use href="#m-echo"/></svg></div>
+          <div>
+            <div class="nm">Echo</div>
+            <div class="role">Narrative</div>
+            <div class="chs"><svg class="on"><use href="#ch-slack"/></svg><svg class="on"><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile hired">
+          <div class="icn"><svg color="#d4a44a"><use href="#m-forge"/></svg></div>
+          <div>
+            <div class="nm">Forge</div>
+            <div class="role">Accumulation</div>
+            <div class="chs"><svg class="on"><use href="#ch-push"/></svg><svg class="on"><use href="#ch-slack"/></svg><svg class="on"><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Manage</button>
+        </article>
+
+        <article class="m-storetile">
+          <div class="icn"><svg color="rgba(245,242,234,.7)"><use href="#m-quill"/></svg></div>
+          <div>
+            <div class="nm">Quill</div>
+            <div class="role">Portfolio</div>
+            <div class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-email"/></svg></div>
+          </div>
+          <button class="hbtn">Hire</button>
+        </article>
+      </div>
+      <div style="height:24px"></div>
+    </section>
+
+    <!-- ═══ WALK · user log ═══ -->
+    <section class="m-pane" id="m-walk">
+      <header class="m-titlebar">
+        <div class="m-date">Your log</div>
+        <h1 class="m-name">Walk</h1>
+        <div class="m-sub">
+          <span><span class="gold">128</span> events</span><span class="dot"></span>
+          <span>last 30d</span>
+        </div>
+      </header>
+
+      <div class="m-stfilters">
+        <button class="chip is-active">All</button>
+        <button class="chip">Alerts</button>
+        <button class="chip">Your moves</button>
+        <button class="chip">Trades</button>
+        <button class="chip">System</button>
+      </div>
+
+      <div class="m-log">
+        <div class="m-logday today"><span>Today · Tue May 19</span><span class="ln"></span></div>
+
+        <div class="m-logrow">
+          <span class="t">07:12</span>
+          <div class="ic"><svg><use href="#m-vega"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Vega</span><span class="act">proposed trim</span></div>
+            <div class="l2"><span class="n">−12%</span> on VIX-call ladder<span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-sms"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow">
+          <span class="t">07:08</span>
+          <div class="ic"><svg><use href="#m-ridge"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Ridge</span><span class="act">raised flag</span></div>
+            <div class="l2">correlation <span class="n">0.71</span> · book-wide<span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow acting">
+          <span class="t">06:30</span>
+          <div class="ic"><svg><use href="#m-forge"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Forge</span><span class="act">bought weekly tranche</span></div>
+            <div class="l2"><span class="n">$12</span> under 20d · cap held<span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg><svg><use href="#ch-email"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow">
+          <span class="t">06:42</span>
+          <div class="ic"><svg><use href="#m-echo"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Echo</span><span class="act">updated themes</span></div>
+            <div class="l2">"AI capex" <span class="n">+3.4×</span><span class="chs"><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow">
+          <span class="t">05:48</span>
+          <div class="ic"><svg><use href="#m-orion"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Orion</span><span class="act">filed brief</span></div>
+            <div class="l2">NVDA above high end · guidance <span class="n">+18%</span><span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow">
+          <span class="t">05:30</span>
+          <div class="ic"><svg><use href="#m-atlas"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Atlas</span><span class="act">pre-Asia note</span></div>
+            <div class="l2">DXY soft · 2-yr <span class="n">4.10%</span><span class="chs"><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow system">
+          <span class="t">04:00</span>
+          <div class="ic">·</div>
+          <div class="b"><div class="l1"><span class="act">Pre-open began</span></div></div>
+        </div>
+
+        <div class="m-logday"><span>Yesterday · Mon May 18</span><span class="ln"></span></div>
+
+        <div class="m-logrow user">
+          <span class="t">17:42</span>
+          <div class="ic">YOU</div>
+          <div class="b">
+            <div class="l1"><span class="who">You</span><span class="act">promoted Atlas → Propose</span></div>
+            <div class="l2">macro signals can now suggest one-tap actions</div>
+          </div>
+        </div>
+
+        <div class="m-logrow user">
+          <span class="t">16:30</span>
+          <div class="ic">YOU</div>
+          <div class="b">
+            <div class="l1"><span class="who">You</span><span class="act">approved Vega's hedge add</span></div>
+            <div class="l2"><span class="n">+8%</span> to VIX-call ladder</div>
+          </div>
+        </div>
+
+        <div class="m-logrow">
+          <span class="t">14:22</span>
+          <div class="ic"><svg><use href="#m-vega"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Vega</span><span class="act">proposed hedge add</span></div>
+            <div class="l2">CPI print spiked realized vol · <span class="n">+8%</span><span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logrow user">
+          <span class="t">11:15</span>
+          <div class="ic">YOU</div>
+          <div class="b">
+            <div class="l1"><span class="who">You</span><span class="act">promoted Forge → Act tier</span></div>
+            <div class="l2">cap <span class="n">$500/wk</span> · auto buys under 20d</div>
+          </div>
+        </div>
+
+        <div class="m-logrow system">
+          <span class="t">09:30</span>
+          <div class="ic">·</div>
+          <div class="b"><div class="l1"><span class="act">Market opened</span></div></div>
+        </div>
+
+        <div class="m-logrow acting">
+          <span class="t">06:30</span>
+          <div class="ic"><svg><use href="#m-forge"/></svg></div>
+          <div class="b">
+            <div class="l1"><span class="who">Forge</span><span class="act">bought weekly tranche</span></div>
+            <div class="l2"><span class="n">$8</span> under 20d · first auto-buy<span class="chs"><svg><use href="#ch-push"/></svg><svg><use href="#ch-slack"/></svg></span></div>
+          </div>
+        </div>
+
+        <div class="m-logday"><span>Sat May 17 · markets closed</span><span class="ln"></span></div>
+
+        <div class="m-logrow user">
+          <span class="t">15:42</span>
+          <div class="ic">YOU</div>
+          <div class="b">
+            <div class="l1"><span class="who">You</span><span class="act">hired Tide → Watch</span></div>
+            <div class="l2">routes to push + #alpha-crew</div>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </section>
+
+  </main>
+
+  <!-- bottom tab bar -->
+  <nav class="m-tabbar" role="tablist" aria-label="primary mobile">
+    <button class="m-tab is-active" data-tab="desk" aria-selected="true">
+      <svg><use href="#n-desk"/></svg><span class="lbl">Desk</span><span class="badge">1</span>
+    </button>
+    <button class="m-tab" data-tab="store" aria-selected="false">
+      <svg><use href="#n-store"/></svg><span class="lbl">Store</span>
+    </button>
+    <button class="m-tab" data-tab="walk" aria-selected="false">
+      <svg><use href="#n-walk"/></svg><span class="lbl">Walk</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+  // unified tab switching · works for desktop top nav, desktop bottom tab bar, AND mobile-app tab bar
+  const desktopTabs = document.querySelectorAll('.nav-link[data-tab]');
+  const desktopBar  = document.querySelectorAll('.tabbar-item[data-tab]');
+  const mobileTabs  = document.querySelectorAll('.m-app .m-tab[data-tab]');
+  const desktopPanes = document.querySelectorAll('main.shell > .tab-pane');
+  const mobilePanes  = document.querySelectorAll('.m-app .m-pane');
+  const mobileScroll = document.querySelector('.m-app .m-main');
+
+  function activate(name){
+    [...desktopTabs, ...desktopBar, ...mobileTabs].forEach(t => {
+      const a = t.dataset.tab === name;
+      t.classList.toggle('is-active', a);
+      t.setAttribute('aria-selected', a ? 'true' : 'false');
+    });
+    desktopPanes.forEach(p => p.classList.toggle('is-active', p.id === 'tab-' + name));
+    mobilePanes.forEach(p => p.classList.toggle('is-active', p.id === 'm-' + name));
+    window.scrollTo({top:0, behavior:'instant'});
+    if(mobileScroll) mobileScroll.scrollTo({top:0, behavior:'instant'});
+  }
+
+  desktopTabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
+  desktopBar .forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
+  mobileTabs .forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
+
+  // keep mobile status-bar clock live
+  function tick(){
+    const d = new Date();
+    const m = String(d.getMinutes()).padStart(2,'0');
+    const t = document.querySelector('.m-app .m-status .time');
+    if(t) t.textContent = d.getHours() + ':' + m;
+  }
+  tick();
+  setInterval(tick, 30000);
+</script>
+
+</body>
+</html>
